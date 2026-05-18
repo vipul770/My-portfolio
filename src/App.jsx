@@ -1,5 +1,7 @@
 import { useState, useEffect } from "react";
 import profileImg from "./assets/profile.png";
+import vsLogo from "./assets/vs_logo.png";
+import heroImg from "./assets/hero.png";
 
 const NAV_LINKS = ["Home", "About", "Skills", "Projects", "Experience", "Contact"];
 
@@ -79,6 +81,15 @@ export default function App() {
         }
         .nav-link:hover { color: white; }
         .nav-link:hover::after { width: 100%; }
+
+        .brand-logo {
+          width: 54px;
+          height: 54px;
+          object-fit: cover;
+          border-radius: 16px;
+          display: block;
+          box-shadow: 0 10px 30px rgba(37,99,235,0.28);
+        }
 
         .btn-primary {
           background: #2563eb; color: white;
@@ -160,6 +171,42 @@ export default function App() {
           border-radius: 14px; border-left: 3px solid #2563eb;
         }
 
+        .about-photo-wrap {
+          position: relative;
+          border-radius: 32px;
+          overflow: hidden;
+          box-shadow: 0 24px 70px rgba(15,23,42,0.16);
+          min-height: 520px;
+        }
+
+        .about-photo {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+          display: block;
+        }
+
+        .about-photo-overlay {
+          position: absolute;
+          inset: 0;
+          background:
+            linear-gradient(180deg, rgba(4,17,43,0.02) 0%, rgba(4,17,43,0.12) 52%, rgba(4,17,43,0.72) 100%);
+        }
+
+        .about-photo-card {
+          position: absolute;
+          left: 28px;
+          right: 28px;
+          bottom: 28px;
+          z-index: 1;
+          background: rgba(255,255,255,0.14);
+          border: 1px solid rgba(255,255,255,0.24);
+          backdrop-filter: blur(14px);
+          border-radius: 24px;
+          padding: 24px;
+          color: white;
+        }
+
         .form-input {
           width: 100%; background: white;
           border: 1.5px solid rgba(0,0,0,0.08); border-radius: 12px;
@@ -204,6 +251,13 @@ export default function App() {
           .projects-grid { grid-template-columns: 1fr !important; }
           .nav-desktop { display: none !important; }
           .hero-card { display: none !important; }
+          .about-photo-wrap { min-height: 420px; }
+          .about-photo-card {
+            left: 18px;
+            right: 18px;
+            bottom: 18px;
+            padding: 18px;
+          }
         }
       `}</style>
 
@@ -221,13 +275,13 @@ export default function App() {
           {/* Logo */}
           <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
             <div style={{
-              width: 42, height: 42, borderRadius: "50%",
-              background: "linear-gradient(135deg, #2563eb, #60a5fa)",
-              display: "flex", alignItems: "center", justifyContent: "center",
-              fontFamily: "'Syne', sans-serif", fontWeight: 800,
-              color: "white", fontSize: 13, letterSpacing: 1,
-              boxShadow: "0 0 0 2px rgba(96,165,250,0.3)",
-            }}>VS</div>
+              padding: 4,
+              borderRadius: 20,
+              background: "linear-gradient(135deg, rgba(37,99,235,0.28), rgba(251,146,60,0.22))",
+              boxShadow: "0 0 0 1px rgba(255,255,255,0.08)",
+            }}>
+              <img src={vsLogo} alt="Vipul Singh logo" className="brand-logo" />
+            </div>
             <span style={{ fontFamily: "'Syne', sans-serif", fontWeight: 700, fontSize: 20, color: "white" }}>
               Vipul Singh
             </span>
@@ -406,17 +460,20 @@ export default function App() {
                 ))}
               </div>
             </div>
-            <div style={{
-              background: "linear-gradient(135deg, #eff6ff, #dbeafe)",
-              borderRadius: 32, padding: 48,
-              display: "flex", alignItems: "center", justifyContent: "center",
-              minHeight: 380, position: "relative", overflow: "hidden",
-            }}>
-              <div style={{
-                position: "absolute", top: -40, right: -40, width: 200, height: 200,
-                borderRadius: "50%", background: "rgba(37,99,235,0.08)",
-              }} />
-              <img src="https://cdn-icons-png.flaticon.com/512/2721/2721297.png" alt="developer" style={{ width: "100%", maxWidth: 300, position: "relative", zIndex: 1 }} />
+            <div className="about-photo-wrap">
+              <img src={heroImg} alt="Technical illustration" className="about-photo" style={{ objectFit: "contain", padding: 40, background: "linear-gradient(135deg, #eff6ff, #dbeafe)" }} />
+              <div className="about-photo-overlay" />
+              <div className="about-photo-card">
+                <p style={{ fontSize: 12, letterSpacing: 2, textTransform: "uppercase", opacity: 0.82, marginBottom: 10 }}>
+                  Technical Focus
+                </p>
+                <h3 style={{ fontFamily: "'Syne', sans-serif", fontSize: 28, lineHeight: 1.15, marginBottom: 10 }}>
+                  API design, frontend systems, and production-ready engineering
+                </h3>
+                <p style={{ fontSize: 14, lineHeight: 1.7, color: "rgba(255,255,255,0.86)" }}>
+                  Focused on scalable architecture, modern interfaces, and clean delivery across Django, DRF, React, and PostgreSQL projects.
+                </p>
+              </div>
             </div>
           </div>
         </div>
