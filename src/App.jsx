@@ -69,7 +69,7 @@ export default function App() {
         a { text-decoration: none; color: inherit; }
 
         .nav-link {
-          color: rgba(255,255,255,0.72);
+          color: #000000;
           font-size: 14px; font-weight: 500;
           letter-spacing: 0.4px; transition: color 0.2s;
           position: relative; cursor: pointer;
@@ -79,7 +79,7 @@ export default function App() {
           width: 0; height: 2px; background: #60a5fa;
           transition: width 0.25s;
         }
-        .nav-link:hover { color: white; }
+        .nav-link:hover { color: #111111; }
         .nav-link:hover::after { width: 100%; }
 
         .brand-logo {
