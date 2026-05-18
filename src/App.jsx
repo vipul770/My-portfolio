@@ -282,13 +282,13 @@ export default function App() {
             }}>
               <img src={vsLogo} alt="Vipul Singh logo" className="brand-logo" />
             </div>
-            <span style={{ fontFamily: "'Syne', sans-serif", fontWeight: 700, fontSize: 20, color: "white" }}>
+            <span style={{ fontFamily: "'Syne', sans-serif", fontWeight: 700, fontSize: 20, color: "black" }}>
               Vipul Singh
             </span>
           </div>
 
           {/* Desktop Nav */}
-          <ul className="nav-desktop" style={{ display: "flex", gap: 36, listStyle: "none" }}>
+          <ul className="nav-desktop" style={{ display: "flex", gap: 36, listStyle: "none", color: "black" }}>
             {NAV_LINKS.map((link) => (
               <li key={link}>
                 <a href={`#${link.toLowerCase()}`} className="nav-link">{link}</a>
