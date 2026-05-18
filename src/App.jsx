@@ -358,7 +358,7 @@ export default function App() {
             {/* Stat chips */}
             {[
               { icon: "💼", title: "Software Developer", sub: "A3 Services" },
-              { icon: "📍", title: "Location", sub: "India" },
+              { icon: "📍", title: "Location", sub: "Pune, India" },
               { icon: "✅", title: "Status", sub: "Open to opportunities" },
             ].map(({ icon, title, sub }) => (
               <div key={title} style={{
@@ -392,7 +392,7 @@ export default function App() {
               <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
                 {[
                   { icon: "💼", label: "Current Role", value: "Software Developer at A3 Services" },
-                  { icon: "📍", label: "Location", value: "India" },
+                  { icon: "📍", label: "Location", value: "Pune, India" },
                   { icon: "✉", label: "Email", value: "vipul70067007@gmail.com" },
                   { icon: "📞", label: "Phone", value: "+91 8793770497" },
                 ].map(({ icon, label, value }) => (
