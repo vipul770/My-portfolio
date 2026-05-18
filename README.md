@@ -1,16 +1,56 @@
-# React + Vite
+# Portfolio
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+This portfolio now includes a working contact form flow using `EmailJS`.
 
-Currently, two official plugins are available:
+## How messages reach you
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+When a visitor fills the form and clicks `Send Message`, the frontend sends the form data through EmailJS. EmailJS then forwards that message to your email inbox.
 
-## React Compiler
+## Setup
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+1. Create an account at `https://www.emailjs.com/`.
+2. Add an email service in EmailJS.
+3. Create an email template in EmailJS.
+4. Copy `.env.example` to `.env`.
+5. Fill these values in `.env`:
 
-## Expanding the ESLint configuration
+```env
+VITE_EMAILJS_SERVICE_ID=your_emailjs_service_id
+VITE_EMAILJS_TEMPLATE_ID=your_emailjs_template_id
+VITE_EMAILJS_PUBLIC_KEY=your_emailjs_public_key
+VITE_CONTACT_RECEIVER_EMAIL=vipul70067007@gmail.com
+```
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+## Recommended EmailJS template variables
+
+Use these variables inside your EmailJS template:
+
+- `{{from_name}}`
+- `{{from_email}}`
+- `{{message}}`
+- `{{to_email}}`
+- `{{reply_to}}`
+
+Example template body:
+
+```text
+You have a new portfolio message.
+
+Name: {{from_name}}
+Email: {{from_email}}
+
+Message:
+{{message}}
+```
+
+## Run locally
+
+```bash
+npm run dev
+```
+
+## Build
+
+```bash
+npm run build
+```

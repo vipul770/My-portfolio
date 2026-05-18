@@ -1,615 +1,588 @@
-import { useState, useEffect } from "react";
-import profileImg from "./assets/profile.png";
-import vsLogo from "./assets/vs_logo.png";
-import heroImg from "./assets/hero.png";
+import { useEffect, useState } from "react";
+import emailjs from "@emailjs/browser";
+import {
+  ArrowRight,
+  Briefcase,
+  Code2,
+  Database,
+  Download,
+  Globe,
+  Mail,
+  MapPin,
+  Phone,
+  Sparkles,
+} from "lucide-react";
 
-const NAV_LINKS = ["Home", "About", "Skills", "Projects", "Experience", "Contact"];
+import profileImage from "./assets/profile.png";
 
-const SKILLS = [
-  { icon: "🐍", name: "Python", type: "Language" },
-  { icon: "🦄", name: "Django", type: "Backend Framework" },
-  { icon: "⚡", name: "DRF", type: "REST APIs" },
-  { icon: "⚛️", name: "React", type: "Frontend" },
-  { icon: "🟨", name: "JavaScript", type: "Language" },
-  { icon: "🐘", name: "PostgreSQL", type: "Database" },
-  { icon: "🐙", name: "Git", type: "Version Control" },
-  { icon: "🐳", name: "Docker", type: "DevOps" },
+const skillStack = [
+  "Python",
+  "Django",
+  "Django REST",
+  "React",
+  "JavaScript",
+  "PostgreSQL",
+  "Redis",
+  "JWT Auth",
 ];
 
-const PROJECTS = [
+const projectCards = [
   {
-    tag: "Web Application",
     title: "School Management System",
-    desc: "A comprehensive school management solution covering student enrollment, attendance tracking, grade management, and reporting — built for scalability and ease of use.",
+    type: "Flagship Build",
+    description:
+      "A full workflow platform for students, teachers, attendance, fees, exams, and reporting with secure role-based flows.",
     tech: ["Django", "DRF", "React", "PostgreSQL"],
   },
   {
-    tag: "Enterprise Tool",
     title: "Asset Management System",
-    desc: "Enterprise-level asset tracking system enabling organizations to manage physical and digital assets, track lifecycles, assign ownership, and generate audit reports.",
-    tech: ["Django", "DRF", "React", "PostgreSQL"],
+    type: "Operations Platform",
+    description:
+      "An enterprise-ready asset tracking product with dashboards, lifecycle status, allocation flows, and admin controls.",
+    tech: ["Django API", "React", "RBAC", "Analytics"],
   },
+  {
+    title: "Cattle Monitoring Alerts",
+    type: "Automation Engine",
+    description:
+      "A backend-first alert system for sensor streams, behavioral logic, health signals, and notification workflows.",
+    tech: ["Python", "Redis", "PostgreSQL", "Scheduling"],
+  },
+];
+
+const experiencePoints = [
+  "Developing scalable REST APIs and backend services.",
+  "Designing business logic that supports real production workflows.",
+  "Integrating React frontends with secure API-driven systems.",
+  "Improving database structure, auth flows, and operational stability.",
+];
+
+const contactItems = [
+  { icon: Mail, label: "Email", value: "vipul.singh.dev@gmail.com" },
+  { icon: Phone, label: "Phone", value: "+91 8793770497" },
+  { icon: MapPin, label: "Location", value: "India" },
 ];
 
 export default function App() {
-  const [scrolled, setScrolled] = useState(false);
-  const [imgError, setImgError] = useState(false);
-  const [menuOpen, setMenuOpen] = useState(false);
+  const [pointer, setPointer] = useState({ x: 0, y: 0 });
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    message: "",
+  });
+  const [sendState, setSendState] = useState({
+    status: "idle",
+    text: "",
+  });
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 20);
-    window.addEventListener("scroll", onScroll);
-    return () => window.removeEventListener("scroll", onScroll);
+    const handleMove = (event) => {
+      const x = (event.clientX / window.innerWidth - 0.5) * 2;
+      const y = (event.clientY / window.innerHeight - 0.5) * 2;
+      setPointer({ x, y });
+    };
+
+    window.addEventListener("pointermove", handleMove);
+
+    return () => window.removeEventListener("pointermove", handleMove);
   }, []);
 
+  const sceneStyle = {
+    transform: `rotateX(${pointer.y * -4}deg) rotateY(${pointer.x * 7}deg)`,
+  };
+
+  const orbStyle = {
+    transform: `translate3d(${pointer.x * 18}px, ${pointer.y * 18}px, 0)`,
+  };
+
+  const handleInputChange = (event) => {
+    const { name, value } = event.target;
+    setFormData((current) => ({
+      ...current,
+      [name]: value,
+    }));
+  };
+
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+
+    if (!formData.name.trim() || !formData.email.trim() || !formData.message.trim()) {
+      setSendState({
+        status: "error",
+        text: "Please fill in your name, email, and message.",
+      });
+      return;
+    }
+
+    const serviceId = import.meta.env.VITE_EMAILJS_SERVICE_ID;
+    const templateId = import.meta.env.VITE_EMAILJS_TEMPLATE_ID;
+    const publicKey = import.meta.env.VITE_EMAILJS_PUBLIC_KEY;
+    const toEmail = import.meta.env.VITE_CONTACT_RECEIVER_EMAIL;
+
+    if (!serviceId || !templateId || !publicKey || !toEmail) {
+      setSendState({
+        status: "error",
+        text: "Contact form is not configured yet. Add the EmailJS values in your .env file.",
+      });
+      return;
+    }
+
+    try {
+      setSendState({
+        status: "sending",
+        text: "Sending your message...",
+      });
+
+      await emailjs.send(
+        serviceId,
+        templateId,
+        {
+          from_name: formData.name,
+          from_email: formData.email,
+          message: formData.message,
+          to_email: toEmail,
+          reply_to: formData.email,
+        },
+        {
+          publicKey,
+        }
+      );
+
+      setFormData({
+        name: "",
+        email: "",
+        message: "",
+      });
+      setSendState({
+        status: "success",
+        text: "Message sent successfully. You should receive it in your email.",
+      });
+    } catch (error) {
+      setSendState({
+        status: "error",
+        text: "Message could not be sent right now. Please try again in a moment.",
+      });
+    }
+  };
+
   return (
-    <div style={{ fontFamily: "'DM Sans', sans-serif", background: "#f0f4ff", color: "#0f172a" }}>
-      {/* Google Fonts */}
-      <link
-        href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap"
-        rel="stylesheet"
-      />
+    <div className="relative min-h-screen overflow-hidden bg-[radial-gradient(circle_at_top,_#1d3d74_0%,_#09111f_45%,_#04070d_100%)] text-slate-100">
+      <div className="pointer-events-none absolute inset-0 overflow-hidden">
+        <div className="absolute left-[8%] top-24 h-56 w-56 rounded-full bg-cyan-400/18 blur-3xl" style={orbStyle} />
+        <div className="absolute right-[6%] top-[32rem] h-72 w-72 rounded-full bg-blue-500/16 blur-3xl" />
+        <div className="absolute bottom-12 left-1/3 h-64 w-64 rounded-full bg-indigo-500/12 blur-3xl" />
+        <div className="grid-overlay absolute inset-0 opacity-40" />
+      </div>
 
-      <style>{`
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        html { scroll-behavior: smooth; }
-        body { overflow-x: hidden; }
-
-        :root {
-          --navy: #04112b;
-          --blue: #2563eb;
-          --blue-light: #3b82f6;
-          --accent: #60a5fa;
-          --bg: #f0f4ff;
-          --white: #ffffff;
-          --gray: #64748b;
-          --text: #0f172a;
-        }
-
-        a { text-decoration: none; color: inherit; }
-
-        .nav-link {
-          color: #000000;
-          font-size: 14px; font-weight: 500;
-          letter-spacing: 0.4px; transition: color 0.2s;
-          position: relative; cursor: pointer;
-        }
-        .nav-link::after {
-          content: ''; position: absolute; bottom: -4px; left: 0;
-          width: 0; height: 2px; background: #60a5fa;
-          transition: width 0.25s;
-        }
-        .nav-link:hover { color: #111111; }
-        .nav-link:hover::after { width: 100%; }
-
-        .brand-logo {
-          width: 54px;
-          height: 54px;
-          object-fit: cover;
-          border-radius: 16px;
-          display: block;
-          box-shadow: 0 10px 30px rgba(37,99,235,0.28);
-        }
-
-        .btn-primary {
-          background: #2563eb; color: white;
-          padding: 14px 30px; border-radius: 12px;
-          font-size: 15px; font-weight: 500;
-          transition: all 0.2s; display: inline-block;
-          box-shadow: 0 4px 24px rgba(37,99,235,0.45);
-        }
-        .btn-primary:hover { background: #3b82f6; transform: translateY(-2px); }
-
-        .btn-outline {
-          border: 1.5px solid rgba(96,165,250,0.5); color: #60a5fa;
-          padding: 14px 30px; border-radius: 12px;
-          font-size: 15px; font-weight: 500;
-          transition: all 0.2s; display: inline-block;
-          background: rgba(96,165,250,0.06);
-        }
-        .btn-outline:hover { border-color: #60a5fa; background: rgba(96,165,250,0.12); }
-
-        .social-btn {
-          width: 46px; height: 46px; border-radius: 12px;
-          background: rgba(255,255,255,0.07);
-          border: 1px solid rgba(255,255,255,0.12);
-          display: flex; align-items: center; justify-content: center;
-          color: rgba(255,255,255,0.75); font-size: 14px;
-          font-weight: 700; transition: all 0.2s;
-          font-family: 'Syne', sans-serif; cursor: pointer;
-        }
-        .social-btn:hover {
-          background: #2563eb; border-color: #2563eb;
-          color: white; transform: translateY(-2px);
-        }
-
-        .skill-card {
-          background: white; border-radius: 20px; padding: 28px 20px;
-          text-align: center; box-shadow: 0 2px 16px rgba(0,0,0,0.06);
-          border: 1px solid rgba(0,0,0,0.05); transition: all 0.25s;
-          cursor: default;
-        }
-        .skill-card:hover {
-          transform: translateY(-4px);
-          box-shadow: 0 8px 32px rgba(37,99,235,0.15);
-          border-color: rgba(37,99,235,0.2);
-        }
-
-        .project-card {
-          background: #f0f4ff; border-radius: 24px; padding: 36px;
-          border: 1px solid rgba(0,0,0,0.06); transition: all 0.25s;
-          position: relative; overflow: hidden;
-        }
-        .project-card::before {
-          content: ''; position: absolute; top: 0; left: 0;
-          width: 4px; height: 100%;
-          background: linear-gradient(to bottom, #2563eb, #60a5fa);
-          border-radius: 4px 0 0 4px;
-        }
-        .project-card:hover { transform: translateY(-4px); box-shadow: 0 16px 48px rgba(0,0,0,0.1); }
-
-        .tech-pill {
-          background: white; border: 1px solid rgba(0,0,0,0.08);
-          border-radius: 6px; padding: 4px 10px;
-          font-size: 12px; font-weight: 500; color: #0f172a;
-        }
-
-        .contact-item {
-          display: flex; align-items: center; gap: 16px;
-          padding: 18px 22px; background: #f0f4ff; border-radius: 14px;
-          border: 1px solid transparent; transition: all 0.2s;
-          cursor: pointer;
-        }
-        .contact-item:hover {
-          border-color: rgba(37,99,235,0.3);
-          background: #eff6ff;
-        }
-
-        .fact-row {
-          display: flex; align-items: flex-start; gap: 16px;
-          padding: 16px 20px; background: #f0f4ff;
-          border-radius: 14px; border-left: 3px solid #2563eb;
-        }
-
-        .about-photo-wrap {
-          position: relative;
-          border-radius: 32px;
-          overflow: hidden;
-          box-shadow: 0 24px 70px rgba(15,23,42,0.16);
-          min-height: 520px;
-        }
-
-        .about-photo {
-          width: 100%;
-          height: 100%;
-          object-fit: cover;
-          display: block;
-        }
-
-        .about-photo-overlay {
-          position: absolute;
-          inset: 0;
-          background:
-            linear-gradient(180deg, rgba(4,17,43,0.02) 0%, rgba(4,17,43,0.12) 52%, rgba(4,17,43,0.72) 100%);
-        }
-
-        .about-photo-card {
-          position: absolute;
-          left: 28px;
-          right: 28px;
-          bottom: 28px;
-          z-index: 1;
-          background: rgba(255,255,255,0.14);
-          border: 1px solid rgba(255,255,255,0.24);
-          backdrop-filter: blur(14px);
-          border-radius: 24px;
-          padding: 24px;
-          color: white;
-        }
-
-        .form-input {
-          width: 100%; background: white;
-          border: 1.5px solid rgba(0,0,0,0.08); border-radius: 12px;
-          padding: 14px 18px; font-family: 'DM Sans', sans-serif;
-          font-size: 15px; color: #0f172a; outline: none;
-          transition: border-color 0.2s, box-shadow 0.2s;
-        }
-        .form-input:focus {
-          border-color: #2563eb;
-          box-shadow: 0 0 0 4px rgba(37,99,235,0.1);
-        }
-
-        .btn-send {
-          width: 100%; background: #2563eb; color: white;
-          border: none; padding: 16px; border-radius: 12px;
-          font-family: 'Syne', sans-serif; font-size: 16px;
-          font-weight: 700; cursor: pointer; transition: all 0.2s;
-          letter-spacing: 0.5px;
-        }
-        .btn-send:hover {
-          background: #3b82f6; transform: translateY(-1px);
-          box-shadow: 0 6px 24px rgba(37,99,235,0.4);
-        }
-
-        @keyframes pulse {
-          0%,100% { opacity: 1; } 50% { opacity: 0.3; }
-        }
-        @keyframes fadeUp {
-          from { opacity: 0; transform: translateY(28px); }
-          to { opacity: 1; transform: translateY(0); }
-        }
-        .fade1 { animation: fadeUp 0.65s ease 0.1s forwards; opacity: 0; }
-        .fade2 { animation: fadeUp 0.65s ease 0.25s forwards; opacity: 0; }
-        .fade3 { animation: fadeUp 0.65s ease 0.4s forwards; opacity: 0; }
-        .fade4 { animation: fadeUp 0.65s ease 0.55s forwards; opacity: 0; }
-        .fade5 { animation: fadeUp 0.65s ease 0.7s forwards; opacity: 0; }
-
-        @media (max-width: 768px) {
-          .hero-grid { grid-template-columns: 1fr !important; }
-          .about-grid { grid-template-columns: 1fr !important; }
-          .contact-grid { grid-template-columns: 1fr !important; }
-          .projects-grid { grid-template-columns: 1fr !important; }
-          .nav-desktop { display: none !important; }
-          .hero-card { display: none !important; }
-          .about-photo-wrap { min-height: 420px; }
-          .about-photo-card {
-            left: 18px;
-            right: 18px;
-            bottom: 18px;
-            padding: 18px;
-          }
-        }
-      `}</style>
-
-      {/* ── NAVBAR ── */}
-      <header
-        style={{
-          position: "fixed", top: 0, left: 0, width: "100%", zIndex: 100,
-          background: scrolled ? "rgba(154, 163, 185, 0.98)" : "#99a3c0",
-          backdropFilter: "blur(12px)",
-          borderBottom: "1px solid rgba(255,255,255,0.06)",
-          transition: "background 0.3s",
-        }}
-      >
-        <nav style={{ maxWidth: 1200, margin: "0 auto", display: "flex", alignItems: "center", justifyContent: "space-between", padding: "18px 32px" }}>
-          {/* Logo */}
-          <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-            <div style={{
-              padding: 4,
-              borderRadius: 20,
-              background: "linear-gradient(135deg, rgba(5, 5, 5, 0.28), rgba(251,146,60,0.22))",
-              boxShadow: "0 0 0 1px rgba(255,255,255,0.08)",
-            }}>
-              <img src={vsLogo} alt="Vipul Singh logo" className="brand-logo" />
+      <header className="sticky top-0 z-50 border-b border-white/10 bg-slate-950/55 backdrop-blur-xl">
+        <nav className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4 md:px-10">
+          <a href="#home" className="flex items-center gap-3">
+            <div className="flex h-11 w-11 items-center justify-center rounded-2xl border border-cyan-300/25 bg-white/10 text-sm font-semibold tracking-[0.35em] text-cyan-200 shadow-[0_0_35px_rgba(56,189,248,0.25)]">
+              VS
             </div>
-            <span style={{ fontFamily: "'Syne', sans-serif", fontWeight: 700, fontSize: 20, color: "black" }}>
-              Vipul Singh
-            </span>
+            <div>
+              <p className="text-sm font-semibold uppercase tracking-[0.35em] text-cyan-200/80">
+                Portfolio
+              </p>
+              <h1 className="text-lg font-semibold text-white">Vipul Singh</h1>
+            </div>
+          </a>
+
+          <div className="hidden items-center gap-7 text-sm text-slate-300 md:flex">
+            <a href="#about" className="transition hover:text-white">About</a>
+            <a href="#skills" className="transition hover:text-white">Stack</a>
+            <a href="#projects" className="transition hover:text-white">Projects</a>
+            <a href="#experience" className="transition hover:text-white">Experience</a>
+            <a href="#contact" className="transition hover:text-white">Contact</a>
           </div>
 
-          {/* Desktop Nav */}
-          <ul className="nav-desktop" style={{ display: "flex", gap: 36, listStyle: "none", color: "black" }}>
-            {NAV_LINKS.map((link) => (
-              <li key={link}>
-                <a href={`#${link.toLowerCase()}`} className="nav-link">{link}</a>
-              </li>
-            ))}
-          </ul>
-
-          <a href="#" style={{
-            background: "#2563eb", color: "white",
-            border: "none", padding: "10px 24px", borderRadius: 10,
-            fontFamily: "'DM Sans', sans-serif", fontWeight: 500,
-            fontSize: 14, cursor: "pointer", letterSpacing: 0.3,
-            transition: "background 0.2s",
-          }}>
-            Resume ↗
+          <a
+            href="#contact"
+            className="rounded-full border border-cyan-300/30 bg-cyan-300/12 px-5 py-2.5 text-sm font-medium text-cyan-100 transition hover:-translate-y-0.5 hover:bg-cyan-300/20"
+          >
+            Let&apos;s Build
           </a>
         </nav>
       </header>
 
-      {/* ── HERO ── */}
-      <section
-        id="home"
-        style={{
-          minHeight: "100vh", display: "flex", alignItems: "center",
-          padding: "120px 32px 80px",
-          background: "linear-gradient(135deg, #04112b 0%, #0a1f4a 55%, #0d2560 100%)",
-          position: "relative", overflow: "hidden",
-        }}
-      >
-        {/* BG glows */}
-        <div style={{
-          position: "absolute", top: -120, right: -120,
-          width: 600, height: 600, borderRadius: "50%",
-          background: "radial-gradient(circle, rgba(37,99,235,0.18) 0%, transparent 70%)",
-          pointerEvents: "none",
-        }} />
-        <div style={{
-          position: "absolute", bottom: -80, left: "10%",
-          width: 400, height: 400, borderRadius: "50%",
-          background: "radial-gradient(circle, rgba(96,165,250,0.1) 0%, transparent 70%)",
-          pointerEvents: "none",
-        }} />
-
-        <div
-          className="hero-grid"
-          style={{ maxWidth: 1200, margin: "0 auto", display: "grid", gridTemplateColumns: "1fr 420px", gap: 80, alignItems: "center", width: "100%" }}
+      <main>
+        <section
+          id="home"
+          className="relative mx-auto flex min-h-screen max-w-7xl items-center px-6 pb-20 pt-16 md:px-10"
         >
-          {/* Left */}
-          <div>
-            <div className="fade1" style={{
-              display: "inline-flex", alignItems: "center", gap: 8,
-              background: "rgba(37,99,235,0.18)", border: "1px solid rgba(96,165,250,0.3)",
-              color: "#60a5fa", borderRadius: 100, padding: "6px 16px",
-              fontSize: 13, fontWeight: 500, letterSpacing: 1,
-              textTransform: "uppercase", marginBottom: 24,
-            }}>
-              <span style={{ width: 6, height: 6, borderRadius: "50%", background: "#60a5fa", animation: "pulse 2s infinite", display: "inline-block" }} />
-              Full Stack Developer
+          <div className="grid w-full items-center gap-14 lg:grid-cols-[1.1fr_0.9fr]">
+            <div className="relative z-10">
+              <div className="inline-flex items-center gap-2 rounded-full border border-cyan-300/20 bg-white/8 px-4 py-2 text-sm text-cyan-100/90 backdrop-blur">
+                <Sparkles size={16} />
+                Full Stack Developer with product-minded backend depth
+              </div>
+
+              <h2 className="mt-8 max-w-4xl text-5xl font-semibold leading-[0.95] text-white md:text-7xl">
+                Building systems that feel
+                <span className="block bg-gradient-to-r from-cyan-300 via-blue-200 to-white bg-clip-text text-transparent">
+                  alive, layered, and production ready.
+                </span>
+              </h2>
+
+              <p className="mt-8 max-w-2xl text-lg leading-8 text-slate-300 md:text-xl">
+                I design and ship full stack platforms with Django, DRF, React,
+                and PostgreSQL, turning complex business workflows into products
+                that are fast, maintainable, and visually sharp.
+              </p>
+
+              <div className="mt-10 flex flex-wrap gap-4">
+                <a
+                  href="#projects"
+                  className="inline-flex items-center gap-2 rounded-full bg-white px-7 py-4 font-medium text-slate-950 transition hover:-translate-y-1 hover:shadow-[0_18px_40px_rgba(255,255,255,0.18)]"
+                >
+                  Explore Projects <ArrowRight size={18} />
+                </a>
+                <a
+                  href="mailto:vipul.singh.dev@gmail.com"
+                  className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/6 px-7 py-4 font-medium text-white transition hover:-translate-y-1 hover:bg-white/12"
+                >
+                  Start a Conversation <Mail size={18} />
+                </a>
+              </div>
+
+              <div className="mt-10 flex flex-wrap gap-4 text-sm text-slate-300">
+                <a
+                  href="https://github.com/"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="glass-chip"
+                >
+                  <Globe size={16} />
+                  GitHub
+                </a>
+                <a
+                  href="https://www.linkedin.com/in/vipul-kumar-singh-511277128/"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="glass-chip"
+                >
+                  <Globe size={16} />
+                  LinkedIn
+                </a>
+                <a href="#contact" className="glass-chip">
+                  <Download size={16} />
+                  Resume Ready
+                </a>
+              </div>
             </div>
 
-            <h1 className="fade2" style={{
-              fontFamily: "'Syne', sans-serif",
-              fontSize: "clamp(42px, 6vw, 80px)",
-              fontWeight: 800, lineHeight: 1.05,
-              color: "white", marginBottom: 20,
-            }}>
-              Hi, I'm<br /><span style={{ color: "#60a5fa" }}>Vipul Singh</span>
-            </h1>
+            <div className="relative perspective-[1800px]">
+              <div
+                className="hero-scene relative mx-auto aspect-square max-w-[540px] transition-transform duration-300 ease-out"
+                style={sceneStyle}
+              >
+                <div className="panel-back absolute inset-[8%] rounded-[2.5rem] border border-cyan-200/20 bg-white/8 backdrop-blur-xl" />
+                <div className="panel-floor absolute bottom-[10%] left-[9%] right-[9%] h-40 rounded-[2rem] border border-white/10 bg-gradient-to-r from-cyan-400/15 via-white/8 to-blue-500/15 blur-[2px]" />
 
-            <p className="fade3" style={{ fontSize: "clamp(18px, 2.5vw, 26px)", fontWeight: 300, color: "rgba(255,255,255,0.65)", marginBottom: 22, lineHeight: 1.5 }}>
-              I build scalable web applications.
-            </p>
+                <div className="stat-card absolute left-0 top-[14%] w-44">
+                  <p className="text-xs uppercase tracking-[0.35em] text-cyan-200/70">
+                    Current Role
+                  </p>
+                  <h3 className="mt-3 text-xl font-semibold text-white">
+                    Software Developer
+                  </h3>
+                  <p className="mt-2 text-sm leading-6 text-slate-300">
+                    Shipping business systems at A3 Services.
+                  </p>
+                </div>
 
-            <p className="fade4" style={{ fontSize: 16, lineHeight: 1.85, color: "rgba(255,255,255,0.55)", marginBottom: 40, maxWidth: 520 }}>
-              Full Stack Developer crafting production-grade applications with Django, React, JavaScript, and PostgreSQL — turning ideas into robust digital experiences.
-            </p>
+                <div className="stat-card absolute right-0 top-[8%] w-40">
+                  <p className="text-4xl font-semibold text-white">2+</p>
+                  <p className="mt-2 text-sm uppercase tracking-[0.3em] text-slate-300">
+                    Years building live apps
+                  </p>
+                </div>
 
-            <div className="fade5" style={{ display: "flex", flexWrap: "wrap", gap: 16, marginBottom: 48 }}>
-              <a href="#projects" className="btn-primary">View My Work →</a>
-              <a href="#contact" className="btn-outline">Get In Touch</a>
-            </div>
+                <div className="profile-stage absolute left-1/2 top-1/2 flex h-[54%] w-[54%] -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-[2.5rem] border border-white/15 bg-[linear-gradient(160deg,rgba(255,255,255,0.20),rgba(255,255,255,0.06))] shadow-[0_30px_90px_rgba(8,15,30,0.45)] backdrop-blur-xl">
+                  <div className="absolute inset-4 rounded-[2rem] border border-cyan-200/20" />
+                  <div className="absolute -bottom-7 left-1/2 h-16 w-40 -translate-x-1/2 rounded-full bg-cyan-300/25 blur-2xl" />
+                  <img
+                    src={profileImage}
+                    alt="Vipul Singh"
+                    className="relative z-10 h-[88%] w-[88%] rounded-[2rem] object-cover object-top shadow-[0_30px_80px_rgba(5,10,20,0.55)]"
+                  />
+                </div>
 
-            <div className="fade5" style={{ display: "flex", gap: 14 }}>
-              <a href="https://github.com/" target="_blank" rel="noreferrer" className="social-btn" title="GitHub">GH</a>
-              <a href="https://www.linkedin.com/in/vipul-kumar-singh-511277128/" target="_blank" rel="noreferrer" className="social-btn" title="LinkedIn">in</a>
-              <a href="mailto:vipul70067007@gmail.com" className="social-btn" title="Email">✉</a>
+                <div className="stat-card absolute bottom-[13%] left-[6%] w-48">
+                  <div className="flex items-center gap-2 text-cyan-200">
+                    <Database size={18} />
+                    <span className="text-xs uppercase tracking-[0.35em]">
+                      Backend Focus
+                    </span>
+                  </div>
+                  <p className="mt-3 text-sm leading-6 text-slate-300">
+                    APIs, auth, database design, automation, and production
+                    logic.
+                  </p>
+                </div>
+
+                <div className="stat-card absolute bottom-[8%] right-[8%] w-44">
+                  <div className="flex items-center gap-2 text-cyan-200">
+                    <Code2 size={18} />
+                    <span className="text-xs uppercase tracking-[0.35em]">
+                      Frontend Edge
+                    </span>
+                  </div>
+                  <p className="mt-3 text-sm leading-6 text-slate-300">
+                    Responsive React interfaces with stronger visual presence.
+                  </p>
+                </div>
+              </div>
             </div>
           </div>
+        </section>
 
-          {/* Profile Card */}
-          <div
-            className="hero-card fade3"
-            style={{
-              background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.1)",
-              borderRadius: 32, padding: 40, display: "flex", flexDirection: "column",
-              alignItems: "center", gap: 24, backdropFilter: "blur(10px)",
-              boxShadow: "0 20px 60px rgba(0,0,0,0.4)",
-            }}
-          >
-            {/* Profile image */}
-            <div style={{
-              width: 200, height: 200, borderRadius: "50%",
-              background: "linear-gradient(135deg, rgba(37,99,235,0.4), rgba(96,165,250,0.2))",
-              display: "flex", alignItems: "center", justifyContent: "center",
-              border: "3px solid rgba(96,165,250,0.3)",
-              boxShadow: "0 0 0 8px rgba(37,99,235,0.1)",
-              overflow: "hidden", flexShrink: 0,
-            }}>
-              {!imgError ? (
-                <img
-                  src={profileImg}
-                  alt="Vipul Singh"
-                  onError={() => setImgError(true)}
-                  style={{ width: "100%", height: "100%", objectFit: "cover" }}
-                />
-              ) : (
-                <span style={{ fontSize: 72 }}>👨‍💻</span>
-              )}
+        <section id="about" className="relative mx-auto max-w-7xl px-6 py-24 md:px-10">
+          <div className="grid gap-8 lg:grid-cols-[0.95fr_1.05fr]">
+            <div className="glass-panel p-8 md:p-10">
+              <p className="section-label">About</p>
+              <h3 className="mt-4 text-3xl font-semibold text-white md:text-5xl">
+                I enjoy turning heavy workflows into clear digital experiences.
+              </h3>
+              <p className="mt-6 text-base leading-8 text-slate-300 md:text-lg">
+                My work sits at the intersection of backend reliability and
+                thoughtful frontend delivery. I build tools for real operations,
+                from school platforms to automation systems, and I care about
+                both the business logic underneath and the way the product feels
+                in someone&apos;s hands.
+              </p>
             </div>
 
-            {/* Stat chips */}
-            {[
-              { icon: "💼", title: "Software Developer", sub: "A3 Services" },
-              { icon: "📍", title: "Location", sub: "Pune, India" },
-              { icon: "✅", title: "Status", sub: "Open to opportunities" },
-            ].map(({ icon, title, sub }) => (
-              <div key={title} style={{
-                background: "rgba(255,255,255,0.08)", border: "1px solid rgba(255,255,255,0.1)",
-                borderRadius: 12, padding: "12px 18px",
-                display: "flex", alignItems: "center", gap: 12, width: "100%",
-              }}>
-                <span style={{ fontSize: 18 }}>{icon}</span>
-                <div style={{ fontSize: 13, color: "rgba(255,255,255,0.75)", lineHeight: 1.4 }}>
-                  <strong style={{ color: "white", display: "block", fontSize: 15 }}>{title}</strong>
-                  {sub}
-                </div>
+            <div className="grid gap-6 md:grid-cols-2">
+              <div className="glass-panel tilt-panel p-8">
+                <Briefcase className="text-cyan-200" size={28} />
+                <h4 className="mt-5 text-2xl font-semibold text-white">
+                  Product Thinking
+                </h4>
+                <p className="mt-4 leading-7 text-slate-300">
+                  I like systems that solve real team problems, not just demo
+                  screens.
+                </p>
+              </div>
+              <div className="glass-panel tilt-panel p-8">
+                <Database className="text-cyan-200" size={28} />
+                <h4 className="mt-5 text-2xl font-semibold text-white">
+                  Data & APIs
+                </h4>
+                <p className="mt-4 leading-7 text-slate-300">
+                  Strong comfort with API design, relational data, auth, and
+                  backend rules.
+                </p>
+              </div>
+              <div className="glass-panel tilt-panel p-8">
+                <Code2 className="text-cyan-200" size={28} />
+                <h4 className="mt-5 text-2xl font-semibold text-white">
+                  Frontend Delivery
+                </h4>
+                <p className="mt-4 leading-7 text-slate-300">
+                  Clean React builds with attention to flow, spacing, and
+                  interaction polish.
+                </p>
+              </div>
+              <div className="glass-panel tilt-panel p-8">
+                <MapPin className="text-cyan-200" size={28} />
+                <h4 className="mt-5 text-2xl font-semibold text-white">
+                  Based in India
+                </h4>
+                <p className="mt-4 leading-7 text-slate-300">
+                  Working across modern web products with a full stack mindset.
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section id="skills" className="mx-auto max-w-7xl px-6 py-24 md:px-10">
+          <div className="flex flex-col gap-5 md:flex-row md:items-end md:justify-between">
+            <div>
+              <p className="section-label">Stack</p>
+              <h3 className="mt-4 text-3xl font-semibold text-white md:text-5xl">
+                The tools behind the builds
+              </h3>
+            </div>
+            <p className="max-w-xl text-slate-300">
+              A backend-heavy toolkit with enough frontend fluency to make the
+              final product feel complete.
+            </p>
+          </div>
+
+          <div className="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+            {skillStack.map((skill, index) => (
+              <div
+                key={skill}
+                className="skill-card"
+                style={{ transform: `translateZ(${(index % 4) * 8}px)` }}
+              >
+                <span className="text-sm uppercase tracking-[0.32em] text-cyan-200/65">
+                  0{index + 1}
+                </span>
+                <h4 className="mt-6 text-2xl font-semibold text-white">
+                  {skill}
+                </h4>
               </div>
             ))}
           </div>
-        </div>
-      </section>
+        </section>
 
-      {/* ── ABOUT ── */}
-      <section id="about" style={{ padding: "96px 32px", background: "white" }}>
-        <div style={{ maxWidth: 1200, margin: "0 auto" }}>
-          <div className="about-grid" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 72, alignItems: "center" }}>
+        <section id="projects" className="mx-auto max-w-7xl px-6 py-24 md:px-10">
+          <div className="flex flex-col gap-5 md:flex-row md:items-end md:justify-between">
             <div>
-              <p style={{ fontSize: 12, fontWeight: 600, letterSpacing: 2, textTransform: "uppercase", color: "#2563eb", marginBottom: 12 }}>About Me</p>
-              <h2 style={{ fontFamily: "'Syne', sans-serif", fontSize: "clamp(32px, 4vw, 52px)", fontWeight: 800, marginBottom: 24, lineHeight: 1.1 }}>
-                Passionate about<br />building things
-              </h2>
-              <p style={{ fontSize: 17, lineHeight: 1.9, color: "#64748b", marginBottom: 36 }}>
-                I'm a Full Stack Developer currently working at A3 Services, where I design and build scalable REST APIs and responsive frontend applications. I love turning complex problems into elegant, efficient solutions.
+              <p className="section-label">Projects</p>
+              <h3 className="mt-4 text-3xl font-semibold text-white md:text-5xl">
+                Systems shaped like products
+              </h3>
+            </div>
+            <p className="max-w-xl text-slate-300">
+              A few builds that reflect how I approach scale, clarity, and
+              operations.
+            </p>
+          </div>
+
+          <div className="mt-14 grid gap-8 lg:grid-cols-3">
+            {projectCards.map((project, index) => (
+              <article
+                key={project.title}
+                className="project-card"
+                style={{ animationDelay: `${index * 140}ms` }}
+              >
+                <span className="inline-flex rounded-full border border-cyan-300/20 bg-cyan-300/10 px-4 py-2 text-xs uppercase tracking-[0.3em] text-cyan-100">
+                  {project.type}
+                </span>
+                <h4 className="mt-7 text-3xl font-semibold text-white">
+                  {project.title}
+                </h4>
+                <p className="mt-5 text-base leading-8 text-slate-300">
+                  {project.description}
+                </p>
+                <div className="mt-8 flex flex-wrap gap-3">
+                  {project.tech.map((item) => (
+                    <span key={item} className="tech-pill">
+                      {item}
+                    </span>
+                  ))}
+                </div>
+              </article>
+            ))}
+          </div>
+        </section>
+
+        <section
+          id="experience"
+          className="mx-auto grid max-w-7xl gap-8 px-6 py-24 md:px-10 lg:grid-cols-[0.9fr_1.1fr]"
+        >
+          <div className="glass-panel p-8 md:p-10">
+            <p className="section-label">Experience</p>
+            <h3 className="mt-4 text-3xl font-semibold text-white md:text-5xl">
+              Shipping dependable software at A3 Services
+            </h3>
+            <p className="mt-6 text-lg text-cyan-100">Software Developer</p>
+            <p className="mt-2 text-slate-300">Full Stack Development</p>
+          </div>
+
+          <div className="glass-panel p-8 md:p-10">
+            <div className="space-y-5">
+              {experiencePoints.map((point) => (
+                <div
+                  key={point}
+                  className="flex items-start gap-4 rounded-3xl border border-white/10 bg-white/6 px-5 py-5"
+                >
+                  <div className="mt-1 h-3 w-3 rounded-full bg-cyan-300 shadow-[0_0_18px_rgba(103,232,249,0.9)]" />
+                  <p className="leading-7 text-slate-200">{point}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        <section id="contact" className="mx-auto max-w-7xl px-6 py-24 md:px-10">
+          <div className="glass-panel grid gap-10 p-8 md:grid-cols-[0.95fr_1.05fr] md:p-10">
+            <div>
+              <p className="section-label">Contact</p>
+              <h3 className="mt-4 text-3xl font-semibold text-white md:text-5xl">
+                If you&apos;re building something real, let&apos;s talk.
+              </h3>
+              <p className="mt-6 max-w-xl leading-8 text-slate-300">
+                I&apos;m interested in teams and products where strong backend
+                architecture and polished frontend delivery both matter.
               </p>
-              <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
-                {[
-                  { icon: "💼", label: "Current Role", value: "Software Developer at A3 Services" },
-                  { icon: "📍", label: "Location", value: "Pune, India" },
-                  { icon: "✉", label: "Email", value: "vipul70067007@gmail.com" },
-                  { icon: "📞", label: "Phone", value: "+91 8793770497" },
-                ].map(({ icon, label, value }) => (
-                  <div key={label} className="fact-row">
-                    <span style={{ fontSize: 20, flexShrink: 0, marginTop: 2 }}>{icon}</span>
-                    <div style={{ fontSize: 15 }}>
-                      <strong style={{ display: "block", color: "#0f172a", fontWeight: 600, marginBottom: 2 }}>{label}</strong>
-                      <span style={{ color: "#64748b" }}>{value}</span>
+
+              <div className="mt-10 space-y-4">
+                {contactItems.map(({ icon: Icon, label, value }) => (
+                  <div
+                    key={label}
+                    className="flex items-center gap-4 rounded-3xl border border-white/10 bg-white/6 px-5 py-4"
+                  >
+                    <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-cyan-300/12 text-cyan-200">
+                      <Icon size={18} />
+                    </div>
+                    <div>
+                      <p className="text-xs uppercase tracking-[0.32em] text-slate-400">
+                        {label}
+                      </p>
+                      <p className="mt-1 text-white">{value}</p>
                     </div>
                   </div>
                 ))}
               </div>
             </div>
-            <div className="about-photo-wrap">
-              <img src={heroImg} alt="Technical illustration" className="about-photo" style={{ objectFit: "contain", padding: 40, background: "linear-gradient(135deg, #eff6ff, #dbeafe)" }} />
-              <div className="about-photo-overlay" />
-              <div className="about-photo-card">
-                <p style={{ fontSize: 12, letterSpacing: 2, textTransform: "uppercase", opacity: 0.82, marginBottom: 10 }}>
-                  Technical Focus
+
+            <form className="space-y-5" onSubmit={handleSubmit}>
+              <input
+                type="text"
+                name="name"
+                placeholder="Your Name"
+                value={formData.name}
+                onChange={handleInputChange}
+                className="contact-input"
+              />
+              <input
+                type="email"
+                name="email"
+                placeholder="Your Email"
+                value={formData.email}
+                onChange={handleInputChange}
+                className="contact-input"
+              />
+              <textarea
+                rows="6"
+                name="message"
+                placeholder="Tell me about your project"
+                value={formData.message}
+                onChange={handleInputChange}
+                className="contact-input resize-none"
+              />
+              {sendState.text ? (
+                <p
+                  className={`text-sm ${
+                    sendState.status === "success"
+                      ? "text-emerald-300"
+                      : sendState.status === "error"
+                        ? "text-rose-300"
+                        : "text-cyan-100"
+                  }`}
+                >
+                  {sendState.text}
                 </p>
-                <h3 style={{ fontFamily: "'Syne', sans-serif", fontSize: 28, lineHeight: 1.15, marginBottom: 10 }}>
-                  API design, frontend systems, and production-ready engineering
-                </h3>
-                <p style={{ fontSize: 14, lineHeight: 1.7, color: "rgba(255,255,255,0.86)" }}>
-                  Focused on scalable architecture, modern interfaces, and clean delivery across Django, DRF, React, and PostgreSQL projects.
-                </p>
-              </div>
-            </div>
+              ) : null}
+              <button
+                type="submit"
+                disabled={sendState.status === "sending"}
+                className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-white px-6 py-4 font-medium text-slate-950 transition hover:-translate-y-1 hover:shadow-[0_18px_40px_rgba(255,255,255,0.18)]"
+              >
+                {sendState.status === "sending" ? "Sending..." : "Send Message"} <ArrowRight size={18} />
+              </button>
+            </form>
           </div>
-        </div>
-      </section>
+        </section>
+      </main>
 
-      {/* ── SKILLS ── */}
-      <section id="skills" style={{ padding: "96px 32px", background: "#f0f4ff" }}>
-        <div style={{ maxWidth: 1200, margin: "0 auto" }}>
-          <p style={{ fontSize: 12, fontWeight: 600, letterSpacing: 2, textTransform: "uppercase", color: "#2563eb", marginBottom: 12 }}>What I Work With</p>
-          <h2 style={{ fontFamily: "'Syne', sans-serif", fontSize: "clamp(32px, 4vw, 52px)", fontWeight: 800, marginBottom: 48, lineHeight: 1.1 }}>Technical Skills</h2>
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(160px, 1fr))", gap: 20 }}>
-            {SKILLS.map(({ icon, name, type }) => (
-              <div key={name} className="skill-card">
-                <div style={{ fontSize: 32, marginBottom: 12 }}>{icon}</div>
-                <div style={{ fontFamily: "'Syne', sans-serif", fontWeight: 700, fontSize: 16, color: "#0f172a", marginBottom: 4 }}>{name}</div>
-                <div style={{ fontSize: 12, color: "#64748b" }}>{type}</div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ── PROJECTS ── */}
-      <section id="projects" style={{ padding: "96px 32px", background: "white" }}>
-        <div style={{ maxWidth: 1200, margin: "0 auto" }}>
-          <p style={{ fontSize: 12, fontWeight: 600, letterSpacing: 2, textTransform: "uppercase", color: "#2563eb", marginBottom: 12 }}>Portfolio</p>
-          <h2 style={{ fontFamily: "'Syne', sans-serif", fontSize: "clamp(32px, 4vw, 52px)", fontWeight: 800, marginBottom: 48, lineHeight: 1.1 }}>Recent Projects</h2>
-          <div className="projects-grid" style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: 28 }}>
-            {PROJECTS.map(({ tag, title, desc, tech }) => (
-              <div key={title} className="project-card">
-                <span style={{
-                  display: "inline-block", background: "rgba(37,99,235,0.1)",
-                  color: "#2563eb", borderRadius: 6, padding: "4px 12px",
-                  fontSize: 12, fontWeight: 600, letterSpacing: 0.5, marginBottom: 16,
-                }}>{tag}</span>
-                <h3 style={{ fontFamily: "'Syne', sans-serif", fontSize: 22, fontWeight: 700, marginBottom: 12, color: "#0f172a" }}>{title}</h3>
-                <p style={{ fontSize: 15, lineHeight: 1.8, color: "#64748b", marginBottom: 20 }}>{desc}</p>
-                <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
-                  {tech.map((t) => <span key={t} className="tech-pill">{t}</span>)}
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ── EXPERIENCE ── */}
-      <section id="experience" style={{ padding: "96px 32px", background: "#f0f4ff" }}>
-        <div style={{ maxWidth: 1200, margin: "0 auto" }}>
-          <p style={{ fontSize: 12, fontWeight: 600, letterSpacing: 2, textTransform: "uppercase", color: "#2563eb", marginBottom: 12 }}>Career</p>
-          <h2 style={{ fontFamily: "'Syne', sans-serif", fontSize: "clamp(32px, 4vw, 52px)", fontWeight: 800, marginBottom: 48, lineHeight: 1.1 }}>Work Experience</h2>
-          <div style={{
-            background: "white", borderRadius: 24, padding: 40,
-            border: "1px solid rgba(0,0,0,0.06)", boxShadow: "0 2px 16px rgba(0,0,0,0.06)",
-            display: "grid", gridTemplateColumns: "auto 1fr", gap: 28, alignItems: "start",
-          }}>
-            <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 8 }}>
-              <div style={{
-                width: 16, height: 16, borderRadius: "50%",
-                background: "#2563eb", boxShadow: "0 0 0 4px rgba(37,99,235,0.2)",
-                flexShrink: 0,
-              }} />
-              <div style={{ width: 2, flex: 1, minHeight: 80, background: "linear-gradient(to bottom, #2563eb, transparent)" }} />
-            </div>
-            <div>
-              <h3 style={{ fontFamily: "'Syne', sans-serif", fontSize: 26, fontWeight: 700, marginBottom: 4 }}>Software Developer</h3>
-              <p style={{ fontSize: 16, color: "#2563eb", fontWeight: 600, marginBottom: 8 }}>A3 Services</p>
-              <p style={{ fontSize: 13, color: "#64748b", marginBottom: 16 }}>📅 Current Position</p>
-              <p style={{ fontSize: 15, lineHeight: 1.8, color: "#64748b" }}>
-                Designing and developing scalable REST APIs using Django REST Framework. Building responsive, modern frontend applications using React and JavaScript. Collaborating with cross-functional teams to deliver production-ready features and maintain high code quality.
-              </p>
-              <div style={{ display: "flex", flexWrap: "wrap", gap: 8, marginTop: 20 }}>
-                {["Python", "Django", "DRF", "React", "JavaScript", "PostgreSQL"].map((t) => (
-                  <span key={t} className="tech-pill">{t}</span>
-                ))}
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* ── CONTACT ── */}
-      <section id="contact" style={{ padding: "96px 32px", background: "white" }}>
-        <div style={{ maxWidth: 1200, margin: "0 auto" }}>
-          <div className="contact-grid" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 64, alignItems: "start" }}>
-            <div>
-              <p style={{ fontSize: 12, fontWeight: 600, letterSpacing: 2, textTransform: "uppercase", color: "#2563eb", marginBottom: 12 }}>Let's Talk</p>
-              <h2 style={{ fontFamily: "'Syne', sans-serif", fontSize: "clamp(28px, 3vw, 44px)", fontWeight: 800, marginBottom: 16, lineHeight: 1.15 }}>Get In Touch</h2>
-              <p style={{ fontSize: 16, color: "#64748b", lineHeight: 1.8, marginBottom: 40 }}>
-                Have a project in mind or want to collaborate? Feel free to reach out — I'm always open to discussing new opportunities.
-              </p>
-              <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
-                {[
-                  { icon: "✉", label: "Email", value: "vipul70067007@gmail.com", href: "mailto:vipul70067007@gmail.com" },
-                  { icon: "📞", label: "Phone", value: "+91 8793770497", href: "tel:+918793770497" },
-                  { icon: "in", label: "LinkedIn", value: "vipul-kumar-singh-511277128", href: "https://www.linkedin.com/in/vipul-kumar-singh-511277128/" },
-                ].map(({ icon, label, value, href }) => (
-                  <a key={label} href={href} target={href.startsWith("http") ? "_blank" : undefined} rel="noreferrer" className="contact-item">
-                    <div style={{
-                      width: 44, height: 44, borderRadius: 12,
-                      background: "rgba(37,99,235,0.1)", display: "flex",
-                      alignItems: "center", justifyContent: "center", fontSize: 18, flexShrink: 0,
-                      fontFamily: "'Syne', sans-serif", fontWeight: 700,
-                    }}>{icon}</div>
-                    <div>
-                      <div style={{ fontSize: 11, textTransform: "uppercase", letterSpacing: 1, color: "#64748b", marginBottom: 2 }}>{label}</div>
-                      <div style={{ fontSize: 15, fontWeight: 500 }}>{value}</div>
-                    </div>
-                  </a>
-                ))}
-              </div>
-            </div>
-
-            <div style={{ background: "#f0f4ff", borderRadius: 24, padding: 40, border: "1px solid rgba(0,0,0,0.06)" }}>
-              {[
-                { label: "Your Name", type: "text", placeholder: "John Doe", id: "name" },
-                { label: "Email Address", type: "email", placeholder: "john@example.com", id: "email" },
-              ].map(({ label, type, placeholder, id }) => (
-                <div key={id} style={{ marginBottom: 20 }}>
-                  <label style={{ display: "block", fontSize: 13, fontWeight: 600, color: "#0f172a", marginBottom: 8, letterSpacing: 0.3 }}>{label}</label>
-                  <input type={type} placeholder={placeholder} className="form-input" />
-                </div>
-              ))}
-              <div style={{ marginBottom: 20 }}>
-                <label style={{ display: "block", fontSize: 13, fontWeight: 600, color: "#0f172a", marginBottom: 8, letterSpacing: 0.3 }}>Message</label>
-                <textarea rows={5} placeholder="Tell me about your project..." className="form-input" style={{ resize: "vertical" }} />
-              </div>
-              <button className="btn-send">Send Message →</button>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* ── FOOTER ── */}
-      <footer style={{ background: "#04112b", color: "rgba(255,255,255,0.6)", padding: 32, textAlign: "center", fontSize: 14 }}>
-        <p>© 2026 <span style={{ color: "#60a5fa" }}>Vipul Singh</span>. All rights reserved. Built with ❤️</p>
+      <footer className="border-t border-white/10 px-6 py-8 text-center text-sm text-slate-400">
+        © 2026 Vipul Singh. Crafted with depth, motion, and modern React.
       </footer>
     </div>
   );
