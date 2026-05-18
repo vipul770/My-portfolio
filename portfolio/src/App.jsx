@@ -137,9 +137,12 @@ export default function App() {
         serviceId,
         templateId,
         {
+          name: formData.name,
           from_name: formData.name,
+          email: formData.email,
           from_email: formData.email,
           message: formData.message,
+          time: new Date().toLocaleString(),
           to_email: toEmail,
           reply_to: formData.email,
         },

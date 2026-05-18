@@ -23,24 +23,64 @@ VITE_CONTACT_RECEIVER_EMAIL=vipul70067007@gmail.com
 
 ## Recommended EmailJS template variables
 
-Use these variables inside your EmailJS template:
+The contact form now sends these variables:
 
+- `{{name}}`
 - `{{from_name}}`
+- `{{email}}`
 - `{{from_email}}`
 - `{{message}}`
+- `{{time}}`
 - `{{to_email}}`
 - `{{reply_to}}`
 
-Example template body:
+You can use this HTML template body in EmailJS:
 
-```text
-You have a new portfolio message.
-
-Name: {{from_name}}
-Email: {{from_email}}
-
-Message:
-{{message}}
+```html
+<div style="font-family: system-ui, sans-serif, Arial; font-size: 12px">
+  <div>
+    A message by {{name}} has been received. Kindly respond at your earliest
+    convenience.
+  </div>
+  <div
+    style="
+      margin-top: 20px;
+      padding: 15px 0;
+      border-width: 1px 0;
+      border-style: dashed;
+      border-color: lightgrey;
+    "
+  >
+    <table role="presentation">
+      <tr>
+        <td style="vertical-align: top">
+          <div
+            style="
+              padding: 6px 10px;
+              margin: 0 10px;
+              background-color: aliceblue;
+              border-radius: 5px;
+              font-size: 26px;
+            "
+            role="img"
+          >
+            👤
+          </div>
+        </td>
+        <td style="vertical-align: top">
+          <div style="color: #2c3e50; font-size: 16px">
+            <strong>{{name}}</strong>
+          </div>
+          <div style="color: #cccccc; font-size: 13px">{{time}}</div>
+          <div style="color: #4b5563; font-size: 13px; margin-top: 4px">
+            {{from_email}}
+          </div>
+          <p style="font-size: 16px">{{message}}</p>
+        </td>
+      </tr>
+    </table>
+  </div>
+</div>
 ```
 
 ## Run locally
