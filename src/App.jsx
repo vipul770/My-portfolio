@@ -241,7 +241,7 @@ export default function App() {
                   Explore Projects <ArrowRight size={18} />
                 </a>
                 <a
-                  href="mailto:vipul.singh.dev@gmail.com"
+                  href="mailto:vipul70067007@gmail.com"
                   className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/6 px-7 py-4 font-medium text-white transition hover:-translate-y-1 hover:bg-white/12"
                 >
                   Start a Conversation <Mail size={18} />
