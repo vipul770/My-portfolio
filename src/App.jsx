@@ -265,7 +265,7 @@ export default function App() {
       <header
         style={{
           position: "fixed", top: 0, left: 0, width: "100%", zIndex: 100,
-          background: scrolled ? "rgba(4,17,43,0.98)" : "#04112b",
+          background: scrolled ? "rgba(154, 163, 185, 0.98)" : "#99a3c0",
           backdropFilter: "blur(12px)",
           borderBottom: "1px solid rgba(255,255,255,0.06)",
           transition: "background 0.3s",
@@ -277,7 +277,7 @@ export default function App() {
             <div style={{
               padding: 4,
               borderRadius: 20,
-              background: "linear-gradient(135deg, rgba(37,99,235,0.28), rgba(251,146,60,0.22))",
+              background: "linear-gradient(135deg, rgba(5, 5, 5, 0.28), rgba(251,146,60,0.22))",
               boxShadow: "0 0 0 1px rgba(255,255,255,0.08)",
             }}>
               <img src={vsLogo} alt="Vipul Singh logo" className="brand-logo" />
