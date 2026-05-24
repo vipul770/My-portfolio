@@ -58,7 +58,7 @@ const experiencePoints = [
 ];
 
 const contactItems = [
-  { icon: Mail, label: "Email", value: "vipul.singh.dev@gmail.com" },
+  { icon: Mail, label: "Email", value: "vipul70067007@gmail.com" },
   { icon: Phone, label: "Phone", value: "+91 8793770497" },
   { icon: MapPin, label: "Location", value: "India" },
 ];
