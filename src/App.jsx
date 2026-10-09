@@ -50,11 +50,53 @@ const projectCards = [
   },
 ];
 
-const experiencePoints = [
-  "Developing scalable REST APIs and backend services.",
-  "Designing business logic that supports real production workflows.",
-  "Integrating React frontends with secure API-driven systems.",
-  "Improving database structure, auth flows, and operational stability.",
+const experienceEntries = [
+  {
+    role: "Software Developer",
+    company: "A3 Services",
+    location: "Pune, Maharashtra",
+    dates: "May 2023 – Present",
+    highlights: [
+      "Built backend features with Python and Django, including REST APIs and internal tools.",
+      "Automated recurring manual work with Python scripts, improving team productivity by 30%.",
+      "Integrated third-party APIs with MySQL and PostgreSQL databases for client solutions.",
+      "Worked with frontend, QA, and deployment teams using Git, Jira, and Agile practices; helped manage sprint goals and deliver on time.",
+    ],
+  },
+  // {
+  //   role: "Freelance Python Developer",
+  //   company: "Self-employed",
+  //   location: "Pune District, Maharashtra",
+  //   dates: "May 2022 – October 2022",
+  //   highlights: [
+  //     "Built competitor-data scraping and analysis automation with Beautiful Soup and Pandas.",
+  //     "Delivered five small projects for local businesses, automating reports and data cleaning.",
+  //     "Managed client communication, estimates, and delivery.",
+  //   ],
+  // },
+  {
+    role: "Customer Relationship Executive",
+    company: "Shriram Finance Limited",
+    location: "Lucknow, Uttar Pradesh",
+    dates: "February 2021 – May 2022",
+    highlights: [
+      "Managed relationships with 100+ customers, supporting service satisfaction and retention.",
+      "Handled loan verification, document collection, and commercial vehicle financing processing.",
+      "Coordinated with credit, legal, and operations teams, resolving concerns and supporting approvals and disbursals.",
+      "Met sales targets, cross-sold financial products, maintained CRM records, and reported customer trends.",
+    ],
+  },
+  {
+    role: "Medical Sales Representative",
+    company: "Hycure Bio Genesis",
+    location: "Sultanpur, Uttar Pradesh",
+    dates: "May 2016 – February 2018",
+    highlights: [
+      "Managed B2B relationships and achieved 120%+ of quarterly sales targets.",
+      "Presented products, negotiated contracts, and closed deals; coordinated onboarding and after-sales support.",
+      "Maintained CRM records, prepared weekly leadership reports, and trained new team members.",
+    ],
+  },
 ];
 
 const contactItems = [
@@ -476,30 +518,68 @@ export default function App() {
 
         <section
           id="experience"
-          className="mx-auto grid max-w-7xl gap-8 px-6 py-24 md:px-10 lg:grid-cols-[0.9fr_1.1fr]"
+          className="mx-auto grid max-w-7xl gap-10 px-6 py-24 md:px-10 lg:grid-cols-[0.78fr_1.22fr] lg:gap-14"
         >
-          <div className="glass-panel p-8 md:p-10">
+          <div className="h-fit lg:sticky lg:top-32">
             <p className="section-label">Experience</p>
             <h3 className="mt-4 text-3xl font-semibold text-white md:text-5xl">
-              Shipping dependable software at A3 Services
+              A career built around people, then systems.
             </h3>
-            <p className="mt-6 text-lg text-cyan-100">Software Developer</p>
-            <p className="mt-2 text-slate-300">Full Stack Development</p>
-          </div>
-
-          <div className="glass-panel p-8 md:p-10">
-            <div className="space-y-5">
-              {experiencePoints.map((point) => (
-                <div
-                  key={point}
-                  className="flex items-start gap-4 rounded-3xl border border-white/10 bg-white/6 px-5 py-5"
-                >
-                  <div className="mt-1 h-3 w-3 rounded-full bg-cyan-300 shadow-[0_0_18px_rgba(103,232,249,0.9)]" />
-                  <p className="leading-7 text-slate-200">{point}</p>
-                </div>
-              ))}
+            <p className="mt-6 max-w-md text-base leading-8 text-slate-300 md:text-lg">
+              From customer-facing finance and sales to backend engineering, I
+              bring communication skills and business understanding to the
+              software I build.
+            </p>
+            <div className="mt-8 inline-flex items-center gap-3 rounded-full border border-cyan-300/20 bg-cyan-300/8 px-4 py-2.5 text-sm text-cyan-100">
+              <span className="h-2 w-2 rounded-full bg-cyan-300 shadow-[0_0_14px_rgba(103,232,249,0.9)]" />
+              Career timeline
             </div>
           </div>
+
+          <ol className="relative space-y-6 border-l border-cyan-200/20 pl-6 md:space-y-7 md:pl-8">
+            {experienceEntries.map((entry, index) => (
+              <li key={`${entry.company}-${entry.role}`} className="relative">
+                <span
+                  aria-hidden="true"
+                  className={`absolute -left-[2.08rem] top-7 h-3 w-3 rounded-full border-2 ${
+                    index === 0
+                      ? "border-cyan-200 bg-cyan-300 shadow-[0_0_18px_rgba(103,232,249,0.8)]"
+                      : "border-slate-500 bg-slate-800"
+                  } md:-left-[2.58rem]`}
+                />
+                <article className="glass-panel p-6 transition duration-300 hover:-translate-y-1 hover:border-cyan-200/25 md:p-7">
+                  <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+                    <div>
+                      <h4 className="text-xl font-semibold text-white md:text-2xl">
+                        {entry.role}
+                      </h4>
+                      <p className="mt-1 text-base font-medium text-cyan-100">
+                        {entry.company}
+                      </p>
+                    </div>
+                    <span className="w-fit shrink-0 rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-xs font-medium text-slate-300 sm:text-right">
+                      {entry.dates}
+                    </span>
+                  </div>
+                  <p className="mt-3 text-sm text-slate-400">{entry.location}</p>
+                  <ul className="mt-5 space-y-2.5">
+                    {entry.highlights.map((highlight) => (
+                      <li
+                        key={highlight}
+                        className="flex items-start gap-3 text-sm leading-6 text-slate-200 md:text-[0.95rem]"
+                      >
+                        <span
+                          aria-hidden="true"
+                          className="mt-[0.55rem] h-1.5 w-1.5 shrink-0 rounded-full bg-cyan-300/80"
+                        />
+                        <span>{highlight}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </article>
+              </li>
+            ))}
+          </ol>
         </section>
 
         <section id="contact" className="mx-auto max-w-7xl px-6 py-24 md:px-10">
