@@ -209,133 +209,62 @@ export default function App() {
         </nav>
       </header>
 
-      <main>
-        <section
-          id="home"
-          className="relative mx-auto flex min-h-screen max-w-7xl items-center px-6 pb-20 pt-16 md:px-10"
-        >
-          <div className="grid w-full items-center gap-14 lg:grid-cols-[1.1fr_0.9fr]">
-            <div className="relative z-10">
-              <div className="inline-flex items-center gap-2 rounded-full border border-cyan-300/20 bg-white/8 px-4 py-2 text-sm text-cyan-100/90 backdrop-blur">
-                <Sparkles size={16} />
-                Full Stack Developer with product-minded backend depth
-              </div>
-
-              <h2 className="mt-8 max-w-4xl text-5xl font-semibold leading-[0.95] text-white md:text-7xl">
-                Building systems that feel
-                <span className="block bg-gradient-to-r from-cyan-300 via-blue-200 to-white bg-clip-text text-transparent">
-                  alive, layered, and production ready.
-                </span>
-              </h2>
-
-              <p className="mt-8 max-w-2xl text-lg leading-8 text-slate-300 md:text-xl">
-                I design and ship full stack platforms with Django, DRF, React,
-                and PostgreSQL, turning complex business workflows into products
-                that are fast, maintainable, and visually sharp.
-              </p>
-
-              <div className="mt-10 flex flex-wrap gap-4">
-                <a
-                  href="#projects"
-                  className="inline-flex items-center gap-2 rounded-full bg-white px-7 py-4 font-medium text-slate-950 transition hover:-translate-y-1 hover:shadow-[0_18px_40px_rgba(255,255,255,0.18)]"
-                >
-                  Explore Projects <ArrowRight size={18} />
-                </a>
-                <a
-                  href="#contact"
-                  className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/6 px-7 py-4 font-medium text-white transition hover:-translate-y-1 hover:bg-white/12"
-                >
-                  Start a Conversation <Mail size={18} />
-                </a>
-              </div>
-
-              <div className="mt-10 flex flex-wrap gap-4 text-sm text-slate-300">
-                <a
-                  href="https://github.com/"
-                  target="_blank"
-                  rel="noreferrer"
-                  className="glass-chip"
-                >
-                  <Globe size={16} />
-                  GitHub
-                </a>
-                <a
-                  href="https://www.linkedin.com/in/vipul-kumar-singh-511277128/"
-                  target="_blank"
-                  rel="noreferrer"
-                  className="glass-chip"
-                >
-                  <Globe size={16} />
-                  LinkedIn
-                </a>
-                <a href="#contact" className="glass-chip">
-                  <Download size={16} />
-                  Resume Ready
-                </a>
-              </div>
-            </div>
-
-            <div className="relative perspective-[1800px]">
-              <div
-                className="hero-scene relative mx-auto aspect-square max-w-[540px] transition-transform duration-300 ease-out"
-                style={sceneStyle}
+      <main id="main">
+        <section className="hero section-wrap" id="home" aria-labelledby="hero-title">
+          <div className="hero-copy">
+            <p className="eyebrow"><span /> Software engineering, with customer context</p>
+            <h1 id="hero-title">
+              I connect the <span>business problem</span> to the software that solves it.
+            </h1>
+            <p className="hero-intro">
+              I bring software development together with customer-facing finance
+              and sales experience: clarifying needs, explaining technical fit,
+              and building APIs and workflows around real requirements.
+            </p>
+            <div className="hero-actions">
+              <a className="button button-primary" href="#contact">
+                Start a conversation <ArrowRight size={17} aria-hidden="true" />
+              </a>
+              <a
+                className="button button-secondary"
+                href="/vipul-singh-portfolio.pdf"
+                download
               >
-                <div className="panel-back absolute inset-[8%] rounded-[2.5rem] border border-cyan-200/20 bg-white/8 backdrop-blur-xl" />
-                <div className="panel-floor absolute bottom-[10%] left-[9%] right-[9%] h-40 rounded-[2rem] border border-white/10 bg-gradient-to-r from-cyan-400/15 via-white/8 to-blue-500/15 blur-[2px]" />
-
-                <div className="stat-card absolute left-0 top-[14%] w-44">
-                  <p className="text-xs uppercase tracking-[0.35em] text-cyan-200/70">
-                    Current Role
-                  </p>
-                  <h3 className="mt-3 text-xl font-semibold text-white">
-                    Software Developer
-                  </h3>
-                  <p className="mt-2 text-sm leading-6 text-slate-300">
-                    Shipping business systems at A3 Services.
-                  </p>
-                </div>
-
-                <div className="stat-card absolute right-0 top-[8%] w-40">
-                  <p className="text-4xl font-semibold text-white">2+</p>
-                  <p className="mt-2 text-sm uppercase tracking-[0.3em] text-slate-300">
-                    Years building live apps
-                  </p>
-                </div>
-
-                <div className="profile-stage absolute left-1/2 top-1/2 flex h-[54%] w-[54%] -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-[2.5rem] border border-white/15 bg-[linear-gradient(160deg,rgba(255,255,255,0.20),rgba(255,255,255,0.06))] shadow-[0_30px_90px_rgba(8,15,30,0.45)] backdrop-blur-xl">
-                  <div className="absolute inset-4 rounded-[2rem] border border-cyan-200/20" />
-                  <div className="absolute -bottom-7 left-1/2 h-16 w-40 -translate-x-1/2 rounded-full bg-cyan-300/25 blur-2xl" />
-                  <img
-                    src={profileImage}
-                    alt="Vipul Singh"
-                    className="relative z-10 h-[88%] w-[88%] rounded-[2rem] object-cover object-top shadow-[0_30px_80px_rgba(5,10,20,0.55)]"
-                  />
-                </div>
-
-                <div className="stat-card absolute bottom-[13%] left-[6%] w-48">
-                  <div className="flex items-center gap-2 text-cyan-200">
-                    <Database size={18} />
-                    <span className="text-xs uppercase tracking-[0.35em]">
-                      Backend Focus
-                    </span>
-                  </div>
-                  <p className="mt-3 text-sm leading-6 text-slate-300">
-                    APIs, auth, database design, automation, and production
-                    logic.
-                  </p>
-                </div>
-
-                <div className="stat-card absolute bottom-[8%] right-[8%] w-44">
-                  <div className="flex items-center gap-2 text-cyan-200">
-                    <Code2 size={18} />
-                    <span className="text-xs uppercase tracking-[0.35em]">
-                      Frontend Edge
-                    </span>
-                  </div>
-                  <p className="mt-3 text-sm leading-6 text-slate-300">
-                    Responsive React interfaces with stronger visual presence.
-                  </p>
-                </div>
+                Download portfolio <Download size={17} aria-hidden="true" />
+              </a>
+              <a className="text-link" href="#projects">
+                Explore selected work <ArrowDown size={16} aria-hidden="true" />
+              </a>
+            </div>
+            <div className="hero-links">
+              <a
+                href="https://www.linkedin.com/in/vipul-kumar-singh-511277128/"
+                target="_blank"
+                rel="noreferrer"
+              >
+                LinkedIn
+              </a>
+              <a href="mailto:vipul70067007@gmail.com">
+                <Mail size={16} aria-hidden="true" /> vipul70067007@gmail.com
+              </a>
+            </div>
+          </div>
+          <div className="hero-aside">
+            <div className="portrait-frame">
+              <img src={profileImage} alt="Vipul Singh" />
+              <span className="portrait-caption">People-first perspective. Engineer&apos;s detail.</span>
+            </div>
+            <div className="bridge-note">
+              <div className="bridge-node">
+                <span className="node-index">01</span>
+                <span className="node-title">Understand</span>
+                <span className="node-caption">Customer needs &amp; workflows</span>
+              </div>
+              <span className="bridge-line" aria-hidden="true" />
+              <div className="bridge-node">
+                <span className="node-index">02</span>
+                <span className="node-title">Build</span>
+                <span className="node-caption">APIs, logic &amp; interfaces</span>
               </div>
             </div>
           </div>
