@@ -292,7 +292,7 @@ export default function App() {
 
               <div className="mt-10 flex flex-wrap gap-4 text-sm text-slate-300">
                 <a
-                  href="https://github.com/"
+                  href="https://github.com/vipul770"
                   target="_blank"
                   rel="noreferrer"
                   className="glass-chip"
