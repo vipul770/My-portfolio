@@ -1,51 +1,74 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import emailjs from "@emailjs/browser";
 import {
+  ArrowDown,
   ArrowRight,
-  Briefcase,
+  BriefcaseBusiness,
   Code2,
   Database,
   Download,
-  Globe,
+  Layers3,
   Mail,
   MapPin,
   Phone,
-  Sparkles,
+  Workflow,
 } from "lucide-react";
 
 import profileImage from "./assets/profile.png";
 
-const skillStack = [
-  "Python",
-  "Django",
-  "Django REST",
-  "React",
-  "JavaScript",
-  "PostgreSQL",
-  "Redis",
-  "JWT Auth",
+const marketFocus = [
+  "API-first SaaS",
+  "Fintech & BFSI",
+  "Automation",
+  "Data products",
+  "Cloud services",
+  "Enterprise software",
+];
+
+const skillGroups = [
+  {
+    title: "Backend & APIs",
+    icon: Code2,
+    skills: ["Python", "Django", "Django REST Framework", "JWT Auth"],
+  },
+  {
+    title: "Data & platform",
+    icon: Database,
+    skills: ["PostgreSQL", "MySQL", "Redis", "Git", "Jira"],
+  },
+  {
+    title: "Product-facing frontend",
+    icon: Layers3,
+    skills: ["React", "JavaScript"],
+  },
 ];
 
 const projectCards = [
   {
+    number: "01",
     title: "School Management System",
-    type: "Flagship Build",
+    type: "Workflow platform",
     description:
-      "A full workflow platform for students, teachers, attendance, fees, exams, and reporting with secure role-based flows.",
-    tech: ["Django", "DRF", "React", "PostgreSQL"],
+      "A connected set of workflows for students, teachers, attendance, fees, exams, and reporting, with secure role-based access.",
+    challenge: "Many school operations, one platform",
+    tech: ["Django", "Django REST Framework", "React", "PostgreSQL"],
   },
   {
+    number: "02",
     title: "Asset Management System",
-    type: "Operations Platform",
+    type: "Operations platform",
     description:
-      "An enterprise-ready asset tracking product with dashboards, lifecycle status, allocation flows, and admin controls.",
-    tech: ["Django API", "React", "RBAC", "Analytics"],
+      "An asset-tracking product organized around dashboards, lifecycle status, allocation flows, and administrative controls.",
+    challenge: "Make asset status and ownership easier to follow",
+    tech: ["Django API", "React", "Role-based access", "Analytics"],
   },
   {
+    number: "03",
     title: "Cattle Monitoring Alerts",
-    type: "Automation Engine",
+    type: "Automation system",
     description:
-      "A backend-first alert system for sensor streams, behavioral logic, health signals, and notification workflows.",
+      "A backend-first alert system combining sensor streams, behavioral logic, health signals, and notification workflows.",
+    challenge: "Turn incoming signals into timely alerts",
     tech: ["Python", "Redis", "PostgreSQL", "Scheduling"],
   },
 ];
@@ -63,17 +86,6 @@ const experienceEntries = [
       "Worked with frontend, QA, and deployment teams using Git, Jira, and Agile practices; helped manage sprint goals and deliver on time.",
     ],
   },
-  // {
-  //   role: "Freelance Python Developer",
-  //   company: "Self-employed",
-  //   location: "Pune District, Maharashtra",
-  //   dates: "May 2022 – October 2022",
-  //   highlights: [
-  //     "Built competitor-data scraping and analysis automation with Beautiful Soup and Pandas.",
-  //     "Delivered five small projects for local businesses, automating reports and data cleaning.",
-  //     "Managed client communication, estimates, and delivery.",
-  //   ],
-  // },
   {
     role: "Customer Relationship Executive",
     company: "Shriram Finance Limited",
@@ -99,50 +111,17 @@ const experienceEntries = [
   },
 ];
 
-const contactItems = [
-  { icon: Mail, label: "Email", value: "vipul70067007@gmail.com" },
-  { icon: Phone, label: "Phone", value: "+91 8793770497" },
-  { icon: MapPin, label: "Location", value: "India" },
-];
-
 export default function App() {
-  const [pointer, setPointer] = useState({ x: 0, y: 0 });
   const [formData, setFormData] = useState({
     name: "",
     email: "",
     message: "",
   });
-  const [sendState, setSendState] = useState({
-    status: "idle",
-    text: "",
-  });
-
-  useEffect(() => {
-    const handleMove = (event) => {
-      const x = (event.clientX / window.innerWidth - 0.5) * 2;
-      const y = (event.clientY / window.innerHeight - 0.5) * 2;
-      setPointer({ x, y });
-    };
-
-    window.addEventListener("pointermove", handleMove);
-
-    return () => window.removeEventListener("pointermove", handleMove);
-  }, []);
-
-  const sceneStyle = {
-    transform: `rotateX(${pointer.y * -4}deg) rotateY(${pointer.x * 7}deg)`,
-  };
-
-  const orbStyle = {
-    transform: `translate3d(${pointer.x * 18}px, ${pointer.y * 18}px, 0)`,
-  };
+  const [sendState, setSendState] = useState({ status: "idle", text: "" });
 
   const handleInputChange = (event) => {
     const { name, value } = event.target;
-    setFormData((current) => ({
-      ...current,
-      [name]: value,
-    }));
+    setFormData((current) => ({ ...current, [name]: value }));
   };
 
   const handleSubmit = async (event) => {
@@ -170,10 +149,7 @@ export default function App() {
     }
 
     try {
-      setSendState({
-        status: "sending",
-        text: "Sending your message...",
-      });
+      setSendState({ status: "sending", text: "Sending your message..." });
 
       await emailjs.send(
         serviceId,
@@ -188,21 +164,15 @@ export default function App() {
           to_email: toEmail,
           reply_to: formData.email,
         },
-        {
-          publicKey,
-        }
+        { publicKey },
       );
 
-      setFormData({
-        name: "",
-        email: "",
-        message: "",
-      });
+      setFormData({ name: "", email: "", message: "" });
       setSendState({
         status: "success",
         text: "Message sent successfully. You should receive it in your email.",
       });
-    } catch (error) {
+    } catch {
       setSendState({
         status: "error",
         text: "Message could not be sent right now. Please try again in a moment.",
@@ -211,42 +181,31 @@ export default function App() {
   };
 
   return (
-    <div className="relative min-h-screen overflow-hidden bg-[radial-gradient(circle_at_top,_#1d3d74_0%,_#09111f_45%,_#04070d_100%)] text-slate-100">
-      <div className="pointer-events-none absolute inset-0 overflow-hidden">
-        <div className="absolute left-[8%] top-24 h-56 w-56 rounded-full bg-cyan-400/18 blur-3xl" style={orbStyle} />
-        <div className="absolute right-[6%] top-[32rem] h-72 w-72 rounded-full bg-blue-500/16 blur-3xl" />
-        <div className="absolute bottom-12 left-1/3 h-64 w-64 rounded-full bg-indigo-500/12 blur-3xl" />
-        <div className="grid-overlay absolute inset-0 opacity-40" />
-      </div>
-
-      <header className="sticky top-0 z-50 border-b border-white/10 bg-slate-950/55 backdrop-blur-xl">
-        <nav className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4 md:px-10">
-          <a href="#home" className="flex items-center gap-3">
-            <div className="flex h-11 w-11 items-center justify-center rounded-2xl border border-cyan-300/25 bg-white/10 text-sm font-semibold tracking-[0.35em] text-cyan-200 shadow-[0_0_35px_rgba(56,189,248,0.25)]">
-              VS
-            </div>
-            <div>
-              <p className="text-sm font-semibold uppercase tracking-[0.35em] text-cyan-200/80">
-                Portfolio
-              </p>
-              <h1 className="text-lg font-semibold text-white">Vipul Singh</h1>
-            </div>
+    <div className="site-shell">
+      <a className="skip-link" href="#main">
+        Skip to content
+      </a>
+      <header className="site-header">
+        <div className="header-inner">
+          <a className="brand" href="#home" aria-label="Vipul Singh, home">
+            <span className="brand-mark" aria-hidden="true">VS</span>
+            <span className="brand-copy">
+              <span className="brand-kicker">Software · Customers</span>
+              <span className="brand-name">Vipul Singh</span>
+            </span>
           </a>
-
-          <div className="hidden items-center gap-7 text-sm text-slate-300 md:flex">
-            <a href="#about" className="transition hover:text-white">About</a>
-            <a href="#skills" className="transition hover:text-white">Stack</a>
-            <a href="#projects" className="transition hover:text-white">Projects</a>
-            <a href="#experience" className="transition hover:text-white">Experience</a>
-            <a href="#contact" className="transition hover:text-white">Contact</a>
+          <a className="header-cta" href="#contact">
+            Let&apos;s talk <ArrowRight size={16} aria-hidden="true" />
+          </a>
+        </div>
+        <nav className="section-nav" aria-label="Main navigation">
+          <div className="section-nav-inner">
+            <a href="#about">Approach</a>
+            <a href="#skills">Capabilities</a>
+            <a href="#projects">Selected work</a>
+            <a href="#experience">Experience</a>
+            <a href="#contact">Contact</a>
           </div>
-
-          <a
-            href="#contact"
-            className="rounded-full border border-cyan-300/30 bg-cyan-300/12 px-5 py-2.5 text-sm font-medium text-cyan-100 transition hover:-translate-y-0.5 hover:bg-cyan-300/20"
-          >
-            Let&apos;s Build
-          </a>
         </nav>
       </header>
 
@@ -292,7 +251,7 @@ export default function App() {
 
               <div className="mt-10 flex flex-wrap gap-4 text-sm text-slate-300">
                 <a
-                  href="https://github.com/vipul770"
+                  href="https://github.com/"
                   target="_blank"
                   rel="noreferrer"
                   className="glass-chip"
@@ -382,290 +341,219 @@ export default function App() {
           </div>
         </section>
 
-        <section id="about" className="relative mx-auto max-w-7xl px-6 py-24 md:px-10">
-          <div className="grid gap-8 lg:grid-cols-[0.95fr_1.05fr]">
-            <div className="glass-panel p-8 md:p-10">
-              <p className="section-label">About</p>
-              <h3 className="mt-4 text-3xl font-semibold text-white md:text-5xl">
-                I enjoy turning heavy workflows into clear digital experiences.
-              </h3>
-              <p className="mt-6 text-base leading-8 text-slate-300 md:text-lg">
-                My work sits at the intersection of backend reliability and
-                thoughtful frontend delivery. I build tools for real operations,
-                from school platforms to automation systems, and I care about
-                both the business logic underneath and the way the product feels
-                in someone&apos;s hands.
-              </p>
+        <section className="market-band" aria-labelledby="market-title">
+          <div className="section-wrap market-inner">
+            <div>
+              <p className="eyebrow">Areas of interest</p>
+              <h2 id="market-title">Where this perspective can be useful</h2>
             </div>
+            <ul className="market-list">
+              {marketFocus.map((market) => <li key={market}>{market}</li>)}
+            </ul>
+            <p className="market-note">
+              Focus areas for applying my skills—not a claim of prior delivery in every sector.
+            </p>
+          </div>
+        </section>
 
-            <div className="grid gap-6 md:grid-cols-2">
-              <div className="glass-panel tilt-panel p-8">
-                <Briefcase className="text-cyan-200" size={28} />
-                <h4 className="mt-5 text-2xl font-semibold text-white">
-                  Product Thinking
-                </h4>
-                <p className="mt-4 leading-7 text-slate-300">
-                  I like systems that solve real team problems, not just demo
-                  screens.
-                </p>
-              </div>
-              <div className="glass-panel tilt-panel p-8">
-                <Database className="text-cyan-200" size={28} />
-                <h4 className="mt-5 text-2xl font-semibold text-white">
-                  Data & APIs
-                </h4>
-                <p className="mt-4 leading-7 text-slate-300">
-                  Strong comfort with API design, relational data, auth, and
-                  backend rules.
-                </p>
-              </div>
-              <div className="glass-panel tilt-panel p-8">
-                <Code2 className="text-cyan-200" size={28} />
-                <h4 className="mt-5 text-2xl font-semibold text-white">
-                  Frontend Delivery
-                </h4>
-                <p className="mt-4 leading-7 text-slate-300">
-                  Clean React builds with attention to flow, spacing, and
-                  interaction polish.
-                </p>
-              </div>
-              <div className="glass-panel tilt-panel p-8">
-                <MapPin className="text-cyan-200" size={28} />
-                <h4 className="mt-5 text-2xl font-semibold text-white">
-                  Based in India
-                </h4>
-                <p className="mt-4 leading-7 text-slate-300">
-                  Working across modern web products with a full stack mindset.
-                </p>
-              </div>
+        <section className="content-section section-wrap" id="about">
+          <div className="section-heading">
+            <p className="eyebrow">The working advantage</p>
+            <h2>Clearer conversations make for better software.</h2>
+          </div>
+          <div className="approach-layout">
+            <p className="approach-lede">
+              My customer-facing roles taught me to listen for the need behind
+              the request. My engineering work lets me carry that context into
+              implementation.
+            </p>
+            <div className="approach-details">
+              <article>
+                <span className="detail-index">01 / Clarify</span>
+                <h3>Start with the workflow</h3>
+                <p>Ask useful questions, understand constraints, and make the underlying need explicit.</p>
+              </article>
+              <article>
+                <span className="detail-index">02 / Translate</span>
+                <h3>Make trade-offs understandable</h3>
+                <p>Talk about technical fit in plain language and connect implementation choices to the problem at hand.</p>
+              </article>
+              <article>
+                <span className="detail-index">03 / Deliver</span>
+                <h3>Build for how work happens</h3>
+                <p>Shape APIs and product workflows around the people and operations that depend on them.</p>
+              </article>
             </div>
           </div>
         </section>
 
-        <section id="skills" className="mx-auto max-w-7xl px-6 py-24 md:px-10">
-          <div className="flex flex-col gap-5 md:flex-row md:items-end md:justify-between">
-            <div>
-              <p className="section-label">Stack</p>
-              <h3 className="mt-4 text-3xl font-semibold text-white md:text-5xl">
-                The tools behind the builds
-              </h3>
-            </div>
-            <p className="max-w-xl text-slate-300">
-              A backend-heavy toolkit with enough frontend fluency to make the
-              final product feel complete.
-            </p>
-          </div>
-
-          <div className="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
-            {skillStack.map((skill, index) => (
-              <div
-                key={skill}
-                className="skill-card"
-                style={{ transform: `translateZ(${(index % 4) * 8}px)` }}
-              >
-                <span className="text-sm uppercase tracking-[0.32em] text-cyan-200/65">
-                  0{index + 1}
-                </span>
-                <h4 className="mt-6 text-2xl font-semibold text-white">
-                  {skill}
-                </h4>
+        <section className="capabilities-section" id="skills">
+          <div className="section-wrap">
+            <div className="section-heading section-heading-inline">
+              <div>
+                <p className="eyebrow">Capabilities</p>
+                <h2>Tools I use to take an idea into a working product.</h2>
               </div>
-            ))}
+              <p>Grounded in the technologies and tools reflected in my project and work history.</p>
+            </div>
+            <div className="capability-list">
+              {skillGroups.map(({ title, icon: Icon, skills }, index) => (
+                <article className="capability-row" key={title}>
+                  <span className="capability-number">0{index + 1}</span>
+                  <div className="capability-title">
+                    <Icon size={20} aria-hidden="true" />
+                    <h3>{title}</h3>
+                  </div>
+                  <ul className="skill-list">
+                    {skills.map((skill) => <li key={skill}>{skill}</li>)}
+                  </ul>
+                </article>
+              ))}
+            </div>
           </div>
         </section>
 
-        <section id="projects" className="mx-auto max-w-7xl px-6 py-24 md:px-10">
-          <div className="flex flex-col gap-5 md:flex-row md:items-end md:justify-between">
+        <section className="content-section section-wrap projects-section" id="projects">
+          <div className="section-heading section-heading-inline">
             <div>
-              <p className="section-label">Projects</p>
-              <h3 className="mt-4 text-3xl font-semibold text-white md:text-5xl">
-                Systems shaped like products
-              </h3>
+              <p className="eyebrow">Selected work</p>
+              <h2>Real workflows, translated into software.</h2>
             </div>
-            <p className="max-w-xl text-slate-300">
-              A few builds that reflect how I approach scale, clarity, and
-              operations.
-            </p>
+            <p>Project examples show the problems and systems I have worked on—without dressing them up as unverified outcomes.</p>
           </div>
-
-          <div className="mt-14 grid gap-8 lg:grid-cols-3">
-            {projectCards.map((project, index) => (
-              <article
-                key={project.title}
-                className="project-card"
-                style={{ animationDelay: `${index * 140}ms` }}
-              >
-                <span className="inline-flex rounded-full border border-cyan-300/20 bg-cyan-300/10 px-4 py-2 text-xs uppercase tracking-[0.3em] text-cyan-100">
-                  {project.type}
-                </span>
-                <h4 className="mt-7 text-3xl font-semibold text-white">
-                  {project.title}
-                </h4>
-                <p className="mt-5 text-base leading-8 text-slate-300">
-                  {project.description}
-                </p>
-                <div className="mt-8 flex flex-wrap gap-3">
-                  {project.tech.map((item) => (
-                    <span key={item} className="tech-pill">
-                      {item}
-                    </span>
-                  ))}
+          <div className="project-list">
+            {projectCards.map((project) => (
+              <article className="project-row" key={project.number}>
+                <span className="project-number">{project.number}</span>
+                <div className="project-summary">
+                  <p className="project-type">{project.type}</p>
+                  <h3>{project.title}</h3>
+                </div>
+                <div className="project-detail">
+                  <p className="project-challenge"><Workflow size={16} aria-hidden="true" /> {project.challenge}</p>
+                  <p>{project.description}</p>
+                  <ul className="project-tech">
+                    {project.tech.map((tech) => <li key={tech}>{tech}</li>)}
+                  </ul>
                 </div>
               </article>
             ))}
           </div>
         </section>
 
-        <section
-          id="experience"
-          className="mx-auto grid max-w-7xl gap-10 px-6 py-24 md:px-10 lg:grid-cols-[0.78fr_1.22fr] lg:gap-14"
-        >
-          <div className="h-fit lg:sticky lg:top-32">
-            <p className="section-label">Experience</p>
-            <h3 className="mt-4 text-3xl font-semibold text-white md:text-5xl">
-              A career built around people, then systems.
-            </h3>
-            <p className="mt-6 max-w-md text-base leading-8 text-slate-300 md:text-lg">
-              From customer-facing finance and sales to backend engineering, I
-              bring communication skills and business understanding to the
-              software I build.
-            </p>
-            <div className="mt-8 inline-flex items-center gap-3 rounded-full border border-cyan-300/20 bg-cyan-300/8 px-4 py-2.5 text-sm text-cyan-100">
-              <span className="h-2 w-2 rounded-full bg-cyan-300 shadow-[0_0_14px_rgba(103,232,249,0.9)]" />
-              Career timeline
+        <section className="experience-section" id="experience">
+          <div className="section-wrap experience-layout">
+            <div className="experience-intro">
+              <p className="eyebrow">Experience</p>
+              <h2>A career across customer conversations and code.</h2>
+              <p>
+                The path from finance and sales into software development is
+                part of how I work: understand people&apos;s needs, communicate
+                clearly, and follow through with practical solutions.
+              </p>
+              <span className="location-note"><MapPin size={15} aria-hidden="true" /> Based in India</span>
             </div>
-          </div>
-
-          <ol className="relative space-y-6 border-l border-cyan-200/20 pl-6 md:space-y-7 md:pl-8">
-            {experienceEntries.map((entry, index) => (
-              <li key={`${entry.company}-${entry.role}`} className="relative">
-                <span
-                  aria-hidden="true"
-                  className={`absolute -left-[2.08rem] top-7 h-3 w-3 rounded-full border-2 ${
-                    index === 0
-                      ? "border-cyan-200 bg-cyan-300 shadow-[0_0_18px_rgba(103,232,249,0.8)]"
-                      : "border-slate-500 bg-slate-800"
-                  } md:-left-[2.58rem]`}
-                />
-                <article className="glass-panel p-6 transition duration-300 hover:-translate-y-1 hover:border-cyan-200/25 md:p-7">
-                  <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
-                    <div>
-                      <h4 className="text-xl font-semibold text-white md:text-2xl">
-                        {entry.role}
-                      </h4>
-                      <p className="mt-1 text-base font-medium text-cyan-100">
-                        {entry.company}
-                      </p>
+            <ol className="timeline">
+              {experienceEntries.map((entry, index) => (
+                <li className="timeline-entry" key={`${entry.company}-${entry.role}`}>
+                  <span className="timeline-marker" aria-hidden="true">{String(index + 1).padStart(2, "0")}</span>
+                  <article>
+                    <div className="timeline-header">
+                      <div>
+                        <h3>{entry.role}</h3>
+                        <p className="company-name">{entry.company}</p>
+                      </div>
+                      <span className="timeline-dates">{entry.dates}</span>
                     </div>
-                    <span className="w-fit shrink-0 rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-xs font-medium text-slate-300 sm:text-right">
-                      {entry.dates}
-                    </span>
-                  </div>
-                  <p className="mt-3 text-sm text-slate-400">{entry.location}</p>
-                  <ul className="mt-5 space-y-2.5">
-                    {entry.highlights.map((highlight) => (
-                      <li
-                        key={highlight}
-                        className="flex items-start gap-3 text-sm leading-6 text-slate-200 md:text-[0.95rem]"
-                      >
-                        <span
-                          aria-hidden="true"
-                          className="mt-[0.55rem] h-1.5 w-1.5 shrink-0 rounded-full bg-cyan-300/80"
-                        />
-                        <span>{highlight}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </article>
-              </li>
-            ))}
-          </ol>
+                    <p className="timeline-location">{entry.location}</p>
+                    <ul>
+                      {entry.highlights.map((highlight) => <li key={highlight}>{highlight}</li>)}
+                    </ul>
+                  </article>
+                </li>
+              ))}
+            </ol>
+          </div>
         </section>
 
-        <section id="contact" className="mx-auto max-w-7xl px-6 py-24 md:px-10">
-          <div className="glass-panel grid gap-10 p-8 md:grid-cols-[0.95fr_1.05fr] md:p-10">
-            <div>
-              <p className="section-label">Contact</p>
-              <h3 className="mt-4 text-3xl font-semibold text-white md:text-5xl">
-                If you&apos;re building something real, let&apos;s talk.
-              </h3>
-              <p className="mt-6 max-w-xl leading-8 text-slate-300">
-                I&apos;m interested in teams and products where strong backend
-                architecture and polished frontend delivery both matter.
-              </p>
-
-              <div className="mt-10 space-y-4">
-                {contactItems.map(({ icon: Icon, label, value }) => (
-                  <div
-                    key={label}
-                    className="flex items-center gap-4 rounded-3xl border border-white/10 bg-white/6 px-5 py-4"
-                  >
-                    <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-cyan-300/12 text-cyan-200">
-                      <Icon size={18} />
-                    </div>
-                    <div>
-                      <p className="text-xs uppercase tracking-[0.32em] text-slate-400">
-                        {label}
-                      </p>
-                      <p className="mt-1 text-white">{value}</p>
-                    </div>
-                  </div>
-                ))}
-              </div>
+        <section className="contact-section section-wrap" id="contact">
+          <div className="contact-copy">
+            <p className="eyebrow">Contact</p>
+            <h2>Let&apos;s talk about the problem you&apos;re solving.</h2>
+            <p>
+              Open to conversations about software engineering, technical
+              sales, solutions engineering, and customer-facing product roles.
+            </p>
+            <div className="contact-details">
+              <a href="mailto:vipul70067007@gmail.com">
+                <Mail size={17} aria-hidden="true" /> vipul70067007@gmail.com
+              </a>
+              <a href="tel:+918793770497">
+                <Phone size={17} aria-hidden="true" /> +91 8793770497
+              </a>
+              <span><MapPin size={17} aria-hidden="true" /> India</span>
             </div>
-
-            <form className="space-y-5" onSubmit={handleSubmit}>
-              <input
-                type="text"
-                name="name"
-                placeholder="Your Name"
-                value={formData.name}
-                onChange={handleInputChange}
-                className="contact-input"
-              />
-              <input
-                type="email"
-                name="email"
-                placeholder="Your Email"
-                value={formData.email}
-                onChange={handleInputChange}
-                className="contact-input"
-              />
-              <textarea
-                rows="6"
-                name="message"
-                placeholder="Tell me about your project"
-                value={formData.message}
-                onChange={handleInputChange}
-                className="contact-input resize-none"
-              />
-              {sendState.text ? (
-                <p
-                  className={`text-sm ${
-                    sendState.status === "success"
-                      ? "text-emerald-300"
-                      : sendState.status === "error"
-                        ? "text-rose-300"
-                        : "text-cyan-100"
-                  }`}
-                >
-                  {sendState.text}
-                </p>
-              ) : null}
-              <button
-                type="submit"
-                disabled={sendState.status === "sending"}
-                className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-white px-6 py-4 font-medium text-slate-950 transition hover:-translate-y-1 hover:shadow-[0_18px_40px_rgba(255,255,255,0.18)]"
-              >
-                {sendState.status === "sending" ? "Sending..." : "Send Message"} <ArrowRight size={18} />
-              </button>
-            </form>
           </div>
+          <form className="contact-form" onSubmit={handleSubmit}>
+            <div className="form-heading">
+              <BriefcaseBusiness size={19} aria-hidden="true" />
+              <span>Send a message</span>
+            </div>
+            <label htmlFor="contact-name">Your name</label>
+            <input
+              id="contact-name"
+              type="text"
+              name="name"
+              autoComplete="name"
+              placeholder="Name"
+              value={formData.name}
+              onChange={handleInputChange}
+              required
+            />
+            <label htmlFor="contact-email">Email address</label>
+            <input
+              id="contact-email"
+              type="email"
+              name="email"
+              autoComplete="email"
+              placeholder="you@example.com"
+              value={formData.email}
+              onChange={handleInputChange}
+              required
+            />
+            <label htmlFor="contact-message">What would you like to discuss?</label>
+            <textarea
+              id="contact-message"
+              rows="5"
+              name="message"
+              placeholder="A little context helps me get back to you."
+              value={formData.message}
+              onChange={handleInputChange}
+              required
+            />
+            {sendState.text ? (
+              <p
+                className={`form-status status-${sendState.status}`}
+                role="status"
+                aria-live="polite"
+              >
+                {sendState.text}
+              </p>
+            ) : null}
+            <button type="submit" disabled={sendState.status === "sending"}>
+              {sendState.status === "sending" ? "Sending..." : "Send message"}
+              <ArrowRight size={17} aria-hidden="true" />
+            </button>
+          </form>
         </section>
       </main>
 
-      <footer className="border-t border-white/10 px-6 py-8 text-center text-sm text-slate-400">
-        © 2026 Vipul Singh. Crafted with depth, motion, and modern React.
+      <footer className="site-footer">
+        <div className="section-wrap footer-inner">
+          <span>Vipul Singh</span>
+          <span>Software engineering shaped by customer context.</span>
+          <a href="#home">Back to top ↑</a>
+        </div>
       </footer>
     </div>
   );
